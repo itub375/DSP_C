@@ -1,0 +1,159 @@
+{
+    "version": 6,
+    "configurePresets": [
+        {
+            "name": "Base",
+            "hidden": true,
+            "generator": "Ninja",
+            "binaryDir": "build/${presetName}",
+            "architecture": {
+                "value": "unspecified",
+                "strategy": "external"
+            },
+            "vendor": {
+                "microsoft.com/VisualStudioSettings/CMake/1.0": {
+                    "intelliSenseMode": "linux-gcc-arm"
+                }
+            }
+        },
+        {
+            "name": "Debug",
+            "inherits": "Base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "config_compile_definitions": "DEBUG=1",
+                "config_compile_flags": "-O2"
+            }
+        },
+        {
+            "name": "DebugNoOpt",
+            "inherits": "Base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug",
+                "config_compile_definitions": "DEBUG=1",
+                "config_compile_flags": "-O0"
+            }
+        },
+        {
+            "name": "Release",
+            "inherits": "Base",
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release",
+                "config_compile_definitions": "NDEBUG=1;RELEASE=1",
+                "config_compile_flags": "-O2"
+            }
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "Debug",
+            "configurePreset": "Debug",
+            "verbose": false
+        },
+        {
+            "name": "DebugNoOpt",
+            "configurePreset": "DebugNoOpt",
+            "verbose": false
+        },
+        {
+            "name": "Release",
+            "configurePreset": "Release",
+            "verbose": false
+        },
+        {
+            "name": "Clean Debug",
+            "inherits": "Debug",
+            "cleanFirst": true
+        },
+        {
+            "name": "Clean DebugNoOpt",
+            "inherits": "DebugNoOpt",
+            "cleanFirst": true
+        },
+        {
+            "name": "Clean Release",
+            "inherits": "Release",
+            "cleanFirst": true
+        }
+    ],
+    "workflowPresets": [
+        {
+            "name": "Debug",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "Debug"
+                },
+                {
+                    "type": "build",
+                    "name": "Debug"
+                }
+            ]
+        },
+        {
+            "name": "DebugNoOpt",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "DebugNoOpt"
+                },
+                {
+                    "type": "build",
+                    "name": "DebugNoOpt"
+                }
+            ]
+        },
+        {
+            "name": "Release",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "Release"
+                },
+                {
+                    "type": "build",
+                    "name": "Release"
+                }
+            ]
+        },
+        {
+            "name": "Rebuild Debug",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "Debug"
+                },
+                {
+                    "type": "build",
+                    "name": "Clean Debug"
+                }
+            ]
+        },
+        {
+            "name": "Rebuild DebugNoOpt",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "DebugNoOpt"
+                },
+                {
+                    "type": "build",
+                    "name": "Clean DebugNoOpt"
+                }
+            ]
+        },
+        {
+            "name": "Rebuild Release",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "Release"
+                },
+                {
+                    "type": "build",
+                    "name": "Clean Release"
+                }
+            ]
+        }
+    ]
+}

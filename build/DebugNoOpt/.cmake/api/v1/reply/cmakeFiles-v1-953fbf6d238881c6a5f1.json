@@ -1,0 +1,203 @@
+{
+	"inputs" : 
+	[
+		{
+			"path" : "CMakeLists.txt"
+		},
+		{
+			"path" : "cmake/toolchain_arm-none-eabi-gcc-13.3.Rel1.cmake"
+		},
+		{
+			"path" : "cmake/common_settings.cmake"
+		},
+		{
+			"path" : "cmake/utils.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "build/DebugNoOpt/CMakeFiles/3.30.5/CMakeSystem.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/eigene Programme/DSP_lab_AIO-windows/dependencies/CMake-3_30_5/share/cmake-3.30/Modules/CMakeSystemSpecificInitialize.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "build/DebugNoOpt/CMakeFiles/3.30.5/CMakeCCompiler.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "build/DebugNoOpt/CMakeFiles/3.30.5/CMakeCXXCompiler.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "build/DebugNoOpt/CMakeFiles/3.30.5/CMakeASMCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/eigene Programme/DSP_lab_AIO-windows/dependencies/CMake-3_30_5/share/cmake-3.30/Modules/CMakeSystemSpecificInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/eigene Programme/DSP_lab_AIO-windows/dependencies/CMake-3_30_5/share/cmake-3.30/Modules/CMakeGenericSystem.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/eigene Programme/DSP_lab_AIO-windows/dependencies/CMake-3_30_5/share/cmake-3.30/Modules/CMakeInitializeConfigs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/eigene Programme/DSP_lab_AIO-windows/dependencies/CMake-3_30_5/share/cmake-3.30/Modules/Platform/Generic.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/eigene Programme/DSP_lab_AIO-windows/dependencies/CMake-3_30_5/share/cmake-3.30/Modules/CMakeCInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/eigene Programme/DSP_lab_AIO-windows/dependencies/CMake-3_30_5/share/cmake-3.30/Modules/CMakeLanguageInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/eigene Programme/DSP_lab_AIO-windows/dependencies/CMake-3_30_5/share/cmake-3.30/Modules/Compiler/GNU-C.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/eigene Programme/DSP_lab_AIO-windows/dependencies/CMake-3_30_5/share/cmake-3.30/Modules/Compiler/GNU.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/eigene Programme/DSP_lab_AIO-windows/dependencies/CMake-3_30_5/share/cmake-3.30/Modules/Compiler/CMakeCommonCompilerMacros.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/eigene Programme/DSP_lab_AIO-windows/dependencies/CMake-3_30_5/share/cmake-3.30/Modules/Platform/Generic.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/eigene Programme/DSP_lab_AIO-windows/dependencies/CMake-3_30_5/share/cmake-3.30/Modules/CMakeCommonLanguageInclude.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/eigene Programme/DSP_lab_AIO-windows/dependencies/CMake-3_30_5/share/cmake-3.30/Modules/CMakeCXXInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/eigene Programme/DSP_lab_AIO-windows/dependencies/CMake-3_30_5/share/cmake-3.30/Modules/CMakeLanguageInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/eigene Programme/DSP_lab_AIO-windows/dependencies/CMake-3_30_5/share/cmake-3.30/Modules/Compiler/GNU-CXX.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/eigene Programme/DSP_lab_AIO-windows/dependencies/CMake-3_30_5/share/cmake-3.30/Modules/Compiler/GNU.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/eigene Programme/DSP_lab_AIO-windows/dependencies/CMake-3_30_5/share/cmake-3.30/Modules/Platform/Generic.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/eigene Programme/DSP_lab_AIO-windows/dependencies/CMake-3_30_5/share/cmake-3.30/Modules/CMakeCommonLanguageInclude.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/eigene Programme/DSP_lab_AIO-windows/dependencies/CMake-3_30_5/share/cmake-3.30/Modules/CMakeASMInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/eigene Programme/DSP_lab_AIO-windows/dependencies/CMake-3_30_5/share/cmake-3.30/Modules/Compiler/GNU-ASM.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/eigene Programme/DSP_lab_AIO-windows/dependencies/CMake-3_30_5/share/cmake-3.30/Modules/Compiler/GNU.cmake"
+		},
+		{
+			"path" : "CMSIS_DSP/Source/CMakeLists.txt"
+		},
+		{
+			"path" : "CMSIS_DSP/Source/BasicMathFunctions/Config.cmake"
+		},
+		{
+			"path" : "CMSIS_DSP/Source/ComplexMathFunctions/Config.cmake"
+		},
+		{
+			"path" : "CMSIS_DSP/Source/QuaternionMathFunctions/Config.cmake"
+		},
+		{
+			"path" : "CMSIS_DSP/Source/ControllerFunctions/Config.cmake"
+		},
+		{
+			"path" : "CMSIS_DSP/Source/FastMathFunctions/Config.cmake"
+		},
+		{
+			"path" : "CMSIS_DSP/Source/FilteringFunctions/Config.cmake"
+		},
+		{
+			"path" : "CMSIS_DSP/Source/MatrixFunctions/Config.cmake"
+		},
+		{
+			"path" : "CMSIS_DSP/Source/StatisticsFunctions/Config.cmake"
+		},
+		{
+			"path" : "CMSIS_DSP/Source/SupportFunctions/Config.cmake"
+		},
+		{
+			"path" : "CMSIS_DSP/Source/TransformFunctions/Config.cmake"
+		},
+		{
+			"path" : "CMSIS_DSP/Source/CommonTables/Config.cmake"
+		},
+		{
+			"path" : "CMSIS_DSP/Source/SVMFunctions/Config.cmake"
+		},
+		{
+			"path" : "CMSIS_DSP/Source/BayesFunctions/Config.cmake"
+		},
+		{
+			"path" : "CMSIS_DSP/Source/DistanceFunctions/Config.cmake"
+		},
+		{
+			"path" : "CMSIS_DSP/Source/InterpolationFunctions/Config.cmake"
+		},
+		{
+			"path" : "CMSIS_DSP/Source/WindowFunctions/Config.cmake"
+		},
+		{
+			"path" : "CMSIS_DSP/Source/configDsp.cmake"
+		}
+	],
+	"kind" : "cmakeFiles",
+	"paths" : 
+	{
+		"build" : "C:/eigene Programme/DSP_lab_AIO-windows/hello_world/build/DebugNoOpt",
+		"source" : "C:/eigene Programme/DSP_lab_AIO-windows/hello_world"
+	},
+	"version" : 
+	{
+		"major" : 1,
+		"minor" : 1
+	}
+}

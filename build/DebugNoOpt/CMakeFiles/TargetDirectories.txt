@@ -1,0 +1,6 @@
+C:/eigene Programme/DSP_lab_AIO-windows/hello_world/build/DebugNoOpt/CMakeFiles/hello_world.axf.dir
+C:/eigene Programme/DSP_lab_AIO-windows/hello_world/build/DebugNoOpt/CMakeFiles/edit_cache.dir
+C:/eigene Programme/DSP_lab_AIO-windows/hello_world/build/DebugNoOpt/CMakeFiles/rebuild_cache.dir
+C:/eigene Programme/DSP_lab_AIO-windows/hello_world/build/DebugNoOpt/lib_dsp/CMakeFiles/CMSISDSP.dir
+C:/eigene Programme/DSP_lab_AIO-windows/hello_world/build/DebugNoOpt/lib_dsp/CMakeFiles/edit_cache.dir
+C:/eigene Programme/DSP_lab_AIO-windows/hello_world/build/DebugNoOpt/lib_dsp/CMakeFiles/rebuild_cache.dir

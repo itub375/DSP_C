@@ -1,0 +1,12 @@
+{
+    "cmake.automaticReconfigure": true,
+    "cmake.configureOnEdit": false,
+    "cmake.configureOnOpen": false,
+    "cmake.deleteBuildDirOnCleanConfigure": true,
+    "cmake.clearOutputBeforeBuild": false,
+    "cmake.saveBeforeBuild": true,
+
+    "cmake.cmakePath": "${workspaceFolder}/../dependencies/CMake-3_30_5/bin/cmake.exe"   
+}
+
+
