@@ -1,164 +1,79 @@
+/*
+ * Author: DSP Gruppe 3
+ * Modified: Spectral feature extraction - FIXED VERSION
+ * Berechnet: Spectral Centroid, Power, Energy, Frequenzpeak
+ * 
+ * 4.1 - Bugfixes
+ * 
+ */
 #include "global.h"
 #include "arm_math.h"
-#include "arm_const_structs.h"
+#include <math.h>
 
-// ============================================================================
-// CONFIGURATION
-// ============================================================================
+// Wie viele Blöcke A in Ausgabe gepuffert werden
+#define SIGNAL_ROWS 80
 
-#define USE_SAMPLING_RATE hz96000
-#define SAMPLE_RATE 96000.0f
+// CFAR Parameter für Start-Erkennung
+#define CFAR_WINDOW_SIZE 20
+#define CFAR_GUARD_CELLS 2
+#define CFAR_THRESHOLD_FACTOR 10.0f
 
-#define ANALYSIS_LATENCY_MS 200
-#define ANALYSIS_DELAY_SAMPLES (96000 * ANALYSIS_LATENCY_MS / 1000)
+// CFAR Parameter für End-Erkennung
+#define END_DETECTION_FRAMES 200
+#define END_ENERGY_THRESHOLD_FACTOR 0.3f
 
-#define FFT_SIZE 256
-#define FFT_HOP_SIZE 128
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Konfigurierbare Parameter
 
-// Feature Weights
-#define WEIGHT_CENTROID  2.0f
-#define WEIGHT_RMS       3.0f
-#define WEIGHT_ROLLOFF   1.5f
-#define WEIGHT_FLUX      2.0f
+// Allgemeine FFT Parameter
+float32_t fs = 32000.0f;
+float32_t df = fs / float32_t(BLOCK_SIZE);
+float32_t dT = 1.0f/df;
 
-// Clustering
-#define MAX_CLUSTERS 3
-#define CLUSTER_UPDATE_RATE 10
+// Parameter für feature Gewichtung
+uint16_t weightCentroid = 3;
+uint16_t weightPower = 2;
+uint16_t weightEnergy = 1;
+uint16_t weightpeakF = 2;
+uint16_t weightFlux = 2;
+uint16_t weightbandwidth = 3;
+uint16_t weightRolloff = 1;
+uint16_t weightFlatness = 0;
 
-// Segmentation
-#define MIN_SEGMENT_FRAMES 4
-#define CHANGE_THRESHOLD 0.35f
+float32_t score = 0.0f;
+float32_t score_threshold = 0.6f;
 
-// Anti-Click
-#define FADE_SAMPLES 192
+uint16_t threshCentroid = 638;
+uint16_t threshPower = 4;
+uint16_t threshEnergy = 5;
+uint16_t threshpeakF = 1733;
+uint16_t threshFlux = 1;
+uint16_t threshBandwidth = 1000;
+uint16_t threshRolloff = 800;
+float32_t threshFlatness = 0.3f;  // FIX: war uint16_t, sollte float32_t sein
 
-// Feature History
-#define FEATURE_HISTORY_SIZE 100
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// ============================================================================
-// NEUE KOMPONENTEN FÜR ECHTES DEINTERLEAVING
-// ============================================================================
+// CFAR Variablen
+float32_t energy_history[CFAR_WINDOW_SIZE] = {0.0f};
+uint32_t energy_history_index = 0;
+uint32_t energy_history_count = 0;
+bool signal_detected = false;
+int Signal_count = 0;
+int min_Signal_count = 50;
 
-// Segment Buffer (maximal 500ms pro Segment bei 96kHz)
-#define MAX_SEGMENT_SAMPLES 48000
-#define MAX_STORED_SEGMENTS 20
+// Variablen für End-Erkennung
+uint32_t low_energy_counter = 0;
+float32_t signal_energy_reference = 0.0f;
+bool reference_energy_set = false;
 
-// Rekonstruktions-Buffer (5 Sekunden)
-#define RECONSTRUCTED_BUFFER_SIZE (SAMPLE_RATE * 5)
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// ============================================================================
-// DATA STRUCTURES
-// ============================================================================
-
-typedef struct {
-    float32_t centroid;
-    float32_t rms;
-    float32_t rolloff;
-    float32_t flux;
-    float32_t zcr;
-    uint32_t sample_position;
-    uint8_t valid;
-} FrameFeatures;
-
-typedef struct {
-    float32_t centroid;
-    float32_t rms;
-    float32_t rolloff;
-    uint32_t sample_count;
-    float32_t confidence;
-} ClusterCenter;
-
-typedef struct {
-    uint32_t start_sample;
-    uint32_t end_sample;
-    uint8_t cluster_id;
-    float32_t avg_centroid;
-    float32_t avg_rms;
-} Segment;
-
-// NEU: Gespeichertes Segment mit Audio-Daten
-typedef struct {
-    int16_t samples[MAX_SEGMENT_SAMPLES];
-    uint32_t length;
-    uint32_t original_position;
-    uint8_t cluster_id;
-    uint8_t valid;
-} StoredSegment;
-
-// NEU: Segment-Queue für Speicherung
-typedef struct {
-    StoredSegment segments[MAX_STORED_SEGMENTS];
-    uint32_t write_idx;
-    uint32_t count;
-} SegmentQueue;
-
-// NEU: Rekonstruktions-Buffer
-typedef struct {
-    int16_t data[RECONSTRUCTED_BUFFER_SIZE];
-    uint32_t write_pos;
-    uint32_t read_pos;
-    uint32_t available_samples;
-    uint8_t buffer_ready;
-} ReconstructedBuffer;
-
-typedef struct {
-    // Ring-Buffer für verzögerten Input
-    int16_t input_ring[ANALYSIS_DELAY_SAMPLES];
-    uint32_t input_write_pos;
-    uint32_t input_read_pos;
-    
-    // Audio-Buffer für FFT
-    float32_t audio_buffer[FFT_SIZE];
-    uint32_t audio_buffer_pos;
-    
-    // Feature History
-    FrameFeatures feature_history[FEATURE_HISTORY_SIZE];
-    uint32_t feature_write_idx;
-    uint32_t feature_count;
-    
-    // Spektrum
-    float32_t prev_spectrum[FFT_SIZE/2];
-    uint8_t prev_spectrum_valid;
-    
-    // Cluster
-    ClusterCenter clusters[MAX_CLUSTERS];
-    uint32_t num_clusters;
-    uint32_t cluster_update_counter;
-    
-    // Segmente (aktive Erkennung)
-    Segment active_segments[50];
-    uint32_t active_segment_count;
-    uint32_t current_segment_start;
-    uint8_t current_cluster_id;
-    uint8_t in_segment;
-    
-    // NEU: Segment-Speicher
-    SegmentQueue segment_queue;
-    
-    // NEU: Rekonstruktions-Buffer
-    ReconstructedBuffer recon_buffer;
-    
-    // Sample Counter
-    uint32_t total_samples_processed;
-    
-    // Fade & Control
-    float32_t fade_gain;
-    uint8_t previous_cluster_active;
-    uint8_t target_cluster;
-    
-    // Statistik
-    uint32_t segments_detected;
-    uint32_t cluster_switches;
-    
-} StreamingState;
-
-// ============================================================================
-// GLOBALS
-// ============================================================================
-
+// Circular buffers
 CircularBuffer rx_buffer;
 CircularBuffer tx_buffer;
 
+// Audio buffers
 uint32_t in[BLOCK_SIZE];
 uint32_t out[BLOCK_SIZE];
 int16_t left_in[BLOCK_SIZE];
@@ -166,441 +81,493 @@ int16_t right_in[BLOCK_SIZE];
 int16_t left_out[BLOCK_SIZE];
 int16_t right_out[BLOCK_SIZE];
 
-uint32_t dummy_zeros[BLOCK_SIZE];
+// FFT buffers and structures
+float32_t left_fft[BLOCK_SIZE * 2] = {0.0f};
+float32_t right_fft[BLOCK_SIZE * 2] = {0.0f};
+float32_t left_fftPast[BLOCK_SIZE * 2] = {0.0f};  // FIX: Initialisierung hinzugefügt
+float32_t right_fftPast[BLOCK_SIZE * 2] = {0.0f};  // FIX: Initialisierung hinzugefügt
+float32_t left_float[BLOCK_SIZE];
+float32_t right_float[BLOCK_SIZE];
 
-float32_t fft_input[FFT_SIZE];
-float32_t fft_output[FFT_SIZE * 2];
-float32_t spectrum_magnitude[FFT_SIZE/2];
+// Ausgangssignal zusammengesetzt
+float32_t signalAusgang[SIGNAL_ROWS][BLOCK_SIZE*2] = {0};
+uint32_t write_index = 0;
 
-StreamingState state;
-arm_rfft_fast_instance_f32 fft_instance;
-float32_t hanning_window[FFT_SIZE];
+// Feature extraction buffers
+float32_t magnitude[BLOCK_SIZE / 2];
+float32_t magnitude_past[BLOCK_SIZE / 2] = {0.0f};  // FIX: Initialisierung hinzugefügt
 
-volatile uint32_t processing_overruns = 0;
-volatile uint32_t buffer_underruns = 0;
+// ARM CMSIS DSP FFT instances
+arm_rfft_fast_instance_f32 FFT_conf;
 
-// Button Debounce
-uint32_t last_button_time = 0;
+// Fensterfunktion
+float32_t window[BLOCK_SIZE] = {1.0f};
 
-// ============================================================================
-// HELPER FUNCTIONS
-// ============================================================================
+// Feature results
+typedef struct {
+    float32_t spectral_centroid;
+    float32_t spectral_bandwidth;
+    float32_t spectral_flatness;
+    float32_t spectral_rolloff;
+    float32_t power;
+    float32_t energy;
+    float32_t peak_frequency;
+    float32_t peak_magnitude;
+    float32_t flux;
+    float32_t spectral_centroid_past;
+    float32_t spectral_bandwidth_past;
+    float32_t spectral_flatness_past;
+    float32_t spectral_rolloff_past;
+    float32_t power_past;
+    float32_t energy_past;
+    float32_t peak_frequency_past;
+    float32_t peak_magnitude_past;
+    float32_t flux_past;
+} AudioFeatures;
 
-void generate_hanning_window(void) {
-    for(uint32_t i = 0; i < FFT_SIZE; i++) {
-        hanning_window[i] = 0.5f * (1.0f - arm_cos_f32(2.0f * PI * (float32_t)i / (float32_t)(FFT_SIZE - 1)));
+AudioFeatures left_features = {0};   // FIX: Initialisierung hinzugefügt
+AudioFeatures right_features = {0};  // FIX: Initialisierung hinzugefügt
+AudioFeatures signalA = {0};         // FIX: Initialisierung hinzugefügt
+
+// Ausgabe-State
+uint32_t playback_index = 0;
+bool is_playing = false;
+
+// Funktion zur Berechnung der Magnitude aus FFT
+void calculate_magnitude(float32_t* fft_data, float32_t* mag, uint32_t fft_size)
+{
+    mag[0] = fabsf(fft_data[0]); // DC component
+    
+    for(uint32_t i = 1; i < fft_size / 2; i++)
+    {
+        mag[i] = sqrtf(fft_data[2*i] * fft_data[2*i] + fft_data[2*i+1] * fft_data[2*i+1]);
     }
 }
 
-void init_streaming_state(StreamingState* s) {
-    memset(s, 0, sizeof(StreamingState));
-    
-    for(uint32_t i = 0; i < MAX_CLUSTERS; i++) {
-        s->clusters[i].centroid = 1000.0f + (float32_t)i * 2000.0f;
-        s->clusters[i].rms = 0.1f;
-        s->clusters[i].rolloff = 2000.0f + (float32_t)i * 3000.0f;
-    }
-    s->num_clusters = MAX_CLUSTERS;
-    s->target_cluster = 0;
-}
+float32_t magnitude_sum_past = 0.0f;
 
-static inline float32_t fast_normalize(int16_t x) {
-    return (float32_t)x * 0.000030518f;
-}
+// Funktion zur Berechnung der Audio Features
+void extract_features(float32_t* mag, float32_t* mag_past, AudioFeatures* features)
+{
+    const float32_t EPS = 1e-12f;
+    const uint32_t K = BLOCK_SIZE / 2;
+    const float32_t invK = 1.0f / (float32_t)(K - 1);
 
-static inline int16_t float_to_int16(float32_t x) {
-    if(x > 1.0f) x = 1.0f;
-    else if(x < -1.0f) x = -1.0f;
-    return (int16_t)(x * 32767.0f);
-}
-
-static inline void ring_write(int16_t* ring, uint32_t size, uint32_t* pos, int16_t value) {
-    ring[*pos] = value;
-    *pos = (*pos + 1) % size;
-}
-
-static inline int16_t ring_read(int16_t* ring, uint32_t size, uint32_t* pos) {
-    int16_t value = ring[*pos];
-    *pos = (*pos + 1) % size;
-    return value;
-}
-
-// ============================================================================
-// DSP LOGIC (Feature Extraction + Clustering wie vorher)
-// ============================================================================
-
-void extract_features(float32_t* audio_frame, FrameFeatures* features, float32_t* prev_spec, uint32_t sample_pos) {
-    float32_t rms;
-    arm_rms_f32(audio_frame, FFT_SIZE, &rms);
-    features->rms = rms;
-    
-    if(rms < 0.005f) {
-        features->valid = 0;
-        features->centroid = 0; features->rolloff = 0; features->flux = 0; features->zcr = 0;
-        features->sample_position = sample_pos;
-        return;
-    }
-    
-    features->valid = 1;
-    features->sample_position = sample_pos;
-    
-    // ZCR
-    uint32_t zero_crossings = 0;
-    for(uint32_t i = 1; i < FFT_SIZE; i++) {
-        if((audio_frame[i-1] >= 0.0f && audio_frame[i] < 0.0f) || 
-           (audio_frame[i-1] < 0.0f && audio_frame[i] >= 0.0f)) zero_crossings++;
-    }
-    features->zcr = (float32_t)zero_crossings / (float32_t)FFT_SIZE;
-    
-    arm_mult_f32(audio_frame, hanning_window, fft_input, FFT_SIZE);
-    arm_rfft_fast_f32(&fft_instance, fft_input, fft_output, 0);
-    arm_cmplx_mag_f32(fft_output, spectrum_magnitude, FFT_SIZE/2);
-    
     float32_t weighted_sum = 0.0f;
-    float32_t total_power = 0.0f;
-    float32_t freq_resolution = SAMPLE_RATE / (float32_t)FFT_SIZE;
-    
-    for(uint32_t i = 1; i < FFT_SIZE/2; i++) {
-        float32_t power = spectrum_magnitude[i] * spectrum_magnitude[i];
-        weighted_sum += (float32_t)i * freq_resolution * power;
-        total_power += power;
+    float32_t magnitude_sum = 0.0f;
+    float32_t power_sum = 0.0f;
+    float32_t peak_mag = 0.0f;
+    uint32_t peak_index = 0;
+    float32_t flux_sum = 0.0f; 
+    float32_t sum_log = 0.0f;
+    float32_t sum_bw = 0.0f;
+
+    // Merkmale des vorherigen FFT Blocks speichern
+    features->spectral_centroid_past = features->spectral_centroid;
+    features->power_past = features->power;
+    features->energy_past = features->energy;
+    features->peak_frequency_past = features->peak_frequency;
+    features->peak_magnitude_past = features->peak_magnitude;
+    features->flux_past = features->flux;
+
+    // PRE-CALCULATE sum (thresholded)
+    for(uint32_t i = 1; i < K; i++)
+    {
+        if (mag[i] > 0.01f)
+            magnitude_sum += mag[i];
     }
-    features->centroid = (total_power > 1e-10f) ? (weighted_sum / total_power) : 0.0f;
-    
-    // Rolloff
-    if(total_power > 1e-10f) {
-        float32_t cumsum = 0.0f;
-        float32_t threshold = 0.85f * total_power;
-        for(uint32_t i = 1; i < FFT_SIZE/2; i++) {
-            cumsum += spectrum_magnitude[i] * spectrum_magnitude[i];
-            if(cumsum >= threshold) {
-                features->rolloff = (float32_t)i * freq_resolution;
-                break;
-            }
-        }
-    } else { features->rolloff = 0.0f; }
-    
-    // Flux
-    if(prev_spec != NULL) {
-        float32_t flux = 0.0f;
-        for(uint32_t i = 1; i < FFT_SIZE/2; i++) {
-            float32_t diff = spectrum_magnitude[i] - prev_spec[i];
-            if(diff > 0.0f) flux += diff * diff;
-        }
-        features->flux = flux;
-        arm_copy_f32(spectrum_magnitude, prev_spec, FFT_SIZE/2);
-    } else { features->flux = 0.0f; }
-}
 
-float32_t compute_cluster_distance(FrameFeatures* feat, ClusterCenter* cluster) {
-    float32_t d_cent = (feat->centroid - cluster->centroid) / 10000.0f;
-    float32_t d_rms = (feat->rms - cluster->rms) * 5.0f;
-    float32_t d_roll = (feat->rolloff - cluster->rolloff) / 10000.0f;
-    return WEIGHT_CENTROID * d_cent * d_cent + WEIGHT_RMS * d_rms * d_rms + WEIGHT_ROLLOFF * d_roll * d_roll;
-}
+    // CALCULATE features
+    for(uint32_t i = 1; i < K; i++)    
+    {        
+        float32_t m = mag[i] + EPS;
+        sum_log += logf(m);
 
-uint8_t assign_to_cluster(StreamingState* s, FrameFeatures* feat) {
-    if(!feat->valid) return s->current_cluster_id;
-    float32_t min_dist = 1e10f; 
-    uint8_t best = 0;
-    for(uint32_t i = 0; i < s->num_clusters; i++) {
-        float32_t dist = compute_cluster_distance(feat, &s->clusters[i]);
-        if(dist < min_dist) { min_dist = dist; best = i; }
-    }
-    return best;
-}
+        if(mag[i] > 0.01f)
+            weighted_sum += (i * df) * mag[i];
 
-void update_cluster_centers(StreamingState* s) {
-    for(uint32_t c = 0; c < s->num_clusters; c++) {
-        float32_t sum_cent = 0, sum_rms = 0, sum_roll = 0;
-        uint32_t count = 0;
-        for(uint32_t i = 0; i < s->feature_count; i++) {
-            FrameFeatures* f = &s->feature_history[i];
-            if(!f->valid) continue;
-            if(assign_to_cluster(s, f) == c) {
-                sum_cent += f->centroid;
-                sum_rms += f->rms;
-                sum_roll += f->rolloff;
-                count++;
-            }
+        power_sum += mag[i] * mag[i];
+
+        if(mag[i] > peak_mag) {
+            peak_mag = mag[i];
+            peak_index = i;
         }
-        if(count > 0) {
-            const float32_t alpha = 0.1f;
-            s->clusters[c].centroid = (1.0f - alpha) * s->clusters[c].centroid + alpha * (sum_cent / count);
-            s->clusters[c].rms = (1.0f - alpha) * s->clusters[c].rms + alpha * (sum_rms / count);
-            s->clusters[c].rolloff = (1.0f - alpha) * s->clusters[c].rolloff + alpha * (sum_roll / count);
-        }
-    }
-}
 
-void detect_segment_change(StreamingState* s, FrameFeatures* current_feat) {
-    uint8_t new_cluster = assign_to_cluster(s, current_feat);
-    
-    if(!s->in_segment) {
-        if(current_feat->valid && current_feat->rms > 0.01f) {
-            s->in_segment = 1;
-            s->current_segment_start = current_feat->sample_position;
-            s->current_cluster_id = new_cluster;
-        }
-    } else {
-        if(new_cluster != s->current_cluster_id || current_feat->rms < 0.005f) {
-            uint32_t seg_len = current_feat->sample_position - s->current_segment_start;
-            if(seg_len > (MIN_SEGMENT_FRAMES * FFT_HOP_SIZE)) {
-                if(s->active_segment_count < 50) {
-                    Segment* seg = &s->active_segments[s->active_segment_count++];
-                    seg->start_sample = s->current_segment_start;
-                    seg->end_sample = current_feat->sample_position;
-                    seg->cluster_id = s->current_cluster_id;
-                    s->segments_detected++;
-                }
-            }
-            s->in_segment = (current_feat->rms > 0.01f);
-            s->current_segment_start = current_feat->sample_position;
-            s->current_cluster_id = new_cluster;
-        }
-    }
-}
-
-// ============================================================================
-// NEUE FUNKTIONEN: SEGMENT-EXTRAKTION & REKONSTRUKTION
-// ============================================================================
-
-// Extrahiere Segment aus delay_ring und speichere in Queue
-void extract_and_store_segment(StreamingState* s, Segment* seg) {
-    if(s->segment_queue.count >= MAX_STORED_SEGMENTS) {
-        // Queue voll, ältestes überschreiben
-        s->segment_queue.write_idx = 0;
-        s->segment_queue.count = MAX_STORED_SEGMENTS - 1;
-    }
-    
-    StoredSegment* stored = &s->segment_queue.segments[s->segment_queue.write_idx];
-    
-    uint32_t seg_length = seg->end_sample - seg->start_sample;
-    if(seg_length > MAX_SEGMENT_SAMPLES) seg_length = MAX_SEGMENT_SAMPLES;
-    
-    // Berechne Startposition im Ring-Buffer
-    uint32_t current_pos = s->input_write_pos;
-    uint32_t delay = ANALYSIS_DELAY_SAMPLES;
-    uint32_t samples_back = s->total_samples_processed - seg->start_sample;
-    
-    if(samples_back < delay) {
-        uint32_t read_pos = (current_pos + delay - samples_back) % delay;
+        float32_t norm_curr = (magnitude_sum > 1e-6f) ? (mag[i] / magnitude_sum) : 0.0f;
+        float32_t norm_past = (magnitude_sum_past > 1e-6f) ? (mag_past[i] / magnitude_sum_past) : 0.0f;
         
-        // Kopiere Samples aus Ring-Buffer
-        for(uint32_t i = 0; i < seg_length; i++) {
-            stored->samples[i] = s->input_ring[read_pos];
-            read_pos = (read_pos + 1) % delay;
+        flux_sum += (norm_curr - norm_past) * (norm_curr - norm_past); 
+    }
+
+    // Spectral Flatness
+    float32_t geo = expf(sum_log * invK);
+    float32_t arith = magnitude_sum * invK;
+    features->spectral_flatness = geo / (arith + EPS);
+
+    // Spectral Rolloff
+    features->spectral_rolloff = fs * 0.5f;
+    float32_t acc = 0.0f;
+    float32_t thr = 0.85f * magnitude_sum;
+    for(uint32_t i = 1; i < K; i++)
+    {
+        acc += mag[i];
+        if(acc >= thr) {
+            features->spectral_rolloff = (float32_t)i * df;
+            break;
         }
+    }
+
+    magnitude_sum_past = magnitude_sum;
+
+    // Spectral Centroid
+    features->spectral_centroid = (magnitude_sum > 1e-6f) ? (weighted_sum / magnitude_sum) : 0.0f;
+    
+    // Spectral Bandwidth
+    for(uint32_t i = 1; i < K; i++)
+    {
+        float32_t diff = (float32_t)i * df - features->spectral_centroid;
+        sum_bw += diff * diff * mag[i];
+    }
+    features->spectral_bandwidth = sqrtf(sum_bw / (magnitude_sum + EPS));
+    
+    // Energy, Power, Peak
+    features->energy = power_sum;
+    features->power = 10.0f * log10f(power_sum / (BLOCK_SIZE / 2.0f) + EPS);  // FIX: EPS hinzugefügt
+    features->peak_frequency = peak_index * df;
+    features->peak_magnitude = peak_mag;
+    features->flux = flux_sum;
+}
+
+// Normalisierung
+double normalize(double value, double min, double max) {
+    double n = (value - min) / (max - min);
+    
+    if (n < 0.0) return 0.0;
+    if (n > 1.0) return 1.0;
+    
+    return n;
+}
+
+// CFAR Detektor
+bool cfar_detector(float32_t current_energy)
+{
+    energy_history[energy_history_index] = current_energy;
+    energy_history_index = (energy_history_index + 1) % CFAR_WINDOW_SIZE;
+    
+    if(energy_history_count < CFAR_WINDOW_SIZE)
+    {
+        energy_history_count++;
+    }
+    
+    if(energy_history_count < CFAR_WINDOW_SIZE)
+    {
+        return false;
+    }
+    
+    float32_t sum = 0.0f;
+    uint32_t count = 0;
+    
+    for(uint32_t i = 0; i < CFAR_WINDOW_SIZE; i++)
+    {
+        int32_t distance = (int32_t)energy_history_index - (int32_t)i - 1;
+        if(distance < 0) distance += CFAR_WINDOW_SIZE;
         
-        stored->length = seg_length;
-        stored->original_position = seg->start_sample;
-        stored->cluster_id = seg->cluster_id;
-        stored->valid = 1;
+        if(i >= CFAR_GUARD_CELLS)
+        {
+            sum += energy_history[distance];
+            count++;
+        }
+    }
+    
+    float32_t mean_energy = (count > 0) ? (sum / count) : 0.0f;
+    float32_t threshold = mean_energy * CFAR_THRESHOLD_FACTOR;
+    
+    return (current_energy > threshold);
+}
+
+// Funktion zur End-Erkennung
+bool check_signal_end(float32_t current_energy)
+{
+    if(!reference_energy_set && signal_detected)
+    {
+        signal_energy_reference = current_energy;
+        reference_energy_set = true;
+        low_energy_counter = 0;
+        return false;
+    }
+    
+    float32_t end_threshold = signal_energy_reference * END_ENERGY_THRESHOLD_FACTOR;
+    
+    if(current_energy < end_threshold)
+    {
+        low_energy_counter++;
         
-        s->segment_queue.write_idx = (s->segment_queue.write_idx + 1) % MAX_STORED_SEGMENTS;
-        if(s->segment_queue.count < MAX_STORED_SEGMENTS) s->segment_queue.count++;
-    }
-}
-
-// Finde alle Segmente eines Clusters und fülle Rekonstruktions-Buffer
-void fill_reconstructed_buffer(StreamingState* s, uint8_t target_cluster) {
-    if(s->recon_buffer.buffer_ready) return; // Buffer bereits gefüllt
-    if(s->segment_queue.count < 3) return; // Zu wenig Segmente
-    
-    // Sortiere Segmente nach Original-Position (Bubble-Sort, einfach)
-    for(uint32_t i = 0; i < s->segment_queue.count - 1; i++) {
-        for(uint32_t j = 0; j < s->segment_queue.count - i - 1; j++) {
-            if(s->segment_queue.segments[j].original_position > 
-               s->segment_queue.segments[j+1].original_position) {
-                StoredSegment temp = s->segment_queue.segments[j];
-                s->segment_queue.segments[j] = s->segment_queue.segments[j+1];
-                s->segment_queue.segments[j+1] = temp;
-            }
+        if(low_energy_counter >= END_DETECTION_FRAMES)
+        {
+            IF_DEBUG(debug_printf("SIGNAL ENDE erkannt nach %u Frames\n", low_energy_counter));
+            return true;
         }
     }
-    
-    // Kopiere alle Segmente des Ziel-Clusters in den Rekonstruktions-Buffer
-    uint32_t write_pos = 0;
-    for(uint32_t i = 0; i < s->segment_queue.count; i++) {
-        StoredSegment* seg = &s->segment_queue.segments[i];
-        if(seg->valid && seg->cluster_id == target_cluster) {
-            // Kopiere Segment mit kurzen Fades
-            uint32_t fade_len = (FADE_SAMPLES < seg->length / 4) ? FADE_SAMPLES : seg->length / 4;
-            
-            for(uint32_t j = 0; j < seg->length; j++) {
-                if(write_pos >= RECONSTRUCTED_BUFFER_SIZE) break;
-                
-                float32_t fade = 1.0f;
-                if(j < fade_len) fade = (float32_t)j / (float32_t)fade_len; // Fade-In
-                if(j > seg->length - fade_len) fade = (float32_t)(seg->length - j) / (float32_t)fade_len; // Fade-Out
-                
-                s->recon_buffer.data[write_pos++] = (int16_t)(seg->samples[j] * fade);
-            }
-        }
+    else
+    {
+        low_energy_counter = 0;
+        signal_energy_reference = 0.9f * signal_energy_reference + 0.1f * current_energy;
     }
     
-    s->recon_buffer.write_pos = write_pos;
-    s->recon_buffer.read_pos = 0;
-    s->recon_buffer.available_samples = write_pos;
-    s->recon_buffer.buffer_ready = (write_pos > BLOCK_SIZE * 2);
+    return false;
 }
-
-// Lese Sample aus Rekonstruktions-Buffer
-int16_t read_from_reconstructed_buffer(StreamingState* s) {
-    if(!s->recon_buffer.buffer_ready || s->recon_buffer.available_samples == 0) {
-        return 0; // Stille wenn Buffer leer
-    }
-    
-    int16_t sample = s->recon_buffer.data[s->recon_buffer.read_pos];
-    s->recon_buffer.read_pos++;
-    s->recon_buffer.available_samples--;
-    
-    // Wenn Buffer fast leer, neu füllen
-    if(s->recon_buffer.available_samples < BLOCK_SIZE) {
-        s->recon_buffer.buffer_ready = 0;
-        fill_reconstructed_buffer(s, s->target_cluster);
-    }
-    
-    return sample;
-}
-
-// ============================================================================
-// BUTTON HANDLER
-// ============================================================================
-
-void handle_button_press(StreamingState* s) {
-    if(gpio_get(USER_BUTTON) == 0) { // Button gedrückt (active low)
-        uint32_t now = s->total_samples_processed / (SAMPLE_RATE / 1000); // Approx. ms
-        
-        if((now - last_button_time) > 300) { // 300ms Debounce
-            s->target_cluster = (s->target_cluster + 1) % s->num_clusters;
-            s->recon_buffer.buffer_ready = 0; // Buffer neu füllen
-            last_button_time = now;
-            
-            // LED-Feedback
-            gpio_set(LED_G, s->target_cluster == 0 ? LOW : HIGH);
-            gpio_set(LED_R, s->target_cluster == 1 ? LOW : HIGH);
-        }
-    }
-}
-
-// ============================================================================
-// MAIN
-// ============================================================================
 
 int main()
 {
-    init_platform(115200, USE_SAMPLING_RATE, line_in);
+    // Initialize platform
+    init_platform(115200, hz32000, line_in);
     
+    gpio_set(TEST_PIN, LOW);
+    
+    // Initialize circular buffers
     rx_buffer.init();
     tx_buffer.init();
     memset(in, 0, sizeof(in));
     memset(out, 0, sizeof(out));
-    memset(dummy_zeros, 0, sizeof(dummy_zeros));
     
-    arm_status status = arm_rfft_fast_init_f32(&fft_instance, FFT_SIZE);
-    if (status != ARM_MATH_SUCCESS) {
-        fatal_error();
-    }
-    generate_hanning_window();
+    // Initialize FFT instance
+    arm_status status = arm_rfft_fast_init_f32(&FFT_conf, BLOCK_SIZE);
     
-    init_streaming_state(&state);
-    state.target_cluster = 0;
+    // Fensterfunktion
+    arm_hamming_f32(window, BLOCK_SIZE);
     
-    // Buffer pre-filling
-    memset(out, 0, sizeof(out));
-    tx_buffer.write(out);
-    tx_buffer.write(out);
+    IF_DEBUG(debug_printf("fs: %.2f Hz, N: %d\n", fs, BLOCK_SIZE));
+    IF_DEBUG(debug_printf("df: %.2f Hz, dt: %.2f ms\n", df, dT * 1000.0));
     
     platform_start();
+    signal_detected = false;
     
     while(true)
     {
-        if(!rx_buffer.read(in)) {
-            continue; 
-        }
+        // Step 1: Read block
+        while(!rx_buffer.read(in));
         
         gpio_set(LED_B, HIGH);
+        gpio_set(TEST_PIN, HIGH);
+        
+        // Step 2: Split channels
         convert_audio_sample_to_2ch(in, left_in, right_in);
         
-        // Process Block
-        for(uint32_t n = 0; n < BLOCK_SIZE; n++) {
-            ring_write(state.input_ring, ANALYSIS_DELAY_SAMPLES, &state.input_write_pos, left_in[n]);
+        // Step 3: Convert to float with windowing
+        for(uint32_t n = 0; n < BLOCK_SIZE; n++)
+        {
+            left_float[n] = ((float32_t)left_in[n] / 32768.0f) * window[n];
+        }
+
+        // Step 4: FFT
+        arm_rfft_fast_f32(&FFT_conf, left_float, left_fft, 0);
+        
+        // Step 5: Calculate magnitude
+        calculate_magnitude(left_fft, magnitude, BLOCK_SIZE);
+
+        // Step 6: Extract features
+        extract_features(magnitude, magnitude_past, &left_features);
+        memcpy(magnitude_past, magnitude, sizeof(magnitude));
+
+        // Step 7: CFAR Signal Detection
+        if(!signal_detected)
+        {
+            signal_detected = cfar_detector(left_features.energy);
             
-            if(state.audio_buffer_pos < FFT_SIZE) {
-                state.audio_buffer[state.audio_buffer_pos++] = fast_normalize(left_in[n]);
-            }
+            memset(left_out, 0, sizeof(left_out));
+            memset(right_out, 0, sizeof(right_out));
+            convert_2ch_to_audio_sample(left_out, right_out, out);
             
-            if(state.audio_buffer_pos >= FFT_SIZE) {
-                FrameFeatures current_features;
-                extract_features(state.audio_buffer, &current_features,
-                               state.prev_spectrum_valid ? state.prev_spectrum : NULL,
-                               state.total_samples_processed - FFT_SIZE + FFT_HOP_SIZE);
-                
-                state.prev_spectrum_valid = 1;
-                state.feature_history[state.feature_write_idx] = current_features;
-                state.feature_write_idx = (state.feature_write_idx + 1) % FEATURE_HISTORY_SIZE;
-                if(state.feature_count < FEATURE_HISTORY_SIZE) state.feature_count++;
-                
-                detect_segment_change(&state, &current_features);
-                
-                if(++state.cluster_update_counter >= CLUSTER_UPDATE_RATE) {
-                    update_cluster_centers(&state);
-                    state.cluster_update_counter = 0;
-                }
-                
-                memmove(state.audio_buffer, &state.audio_buffer[FFT_HOP_SIZE], 
-                       (FFT_SIZE - FFT_HOP_SIZE) * sizeof(float32_t));
-                state.audio_buffer_pos = FFT_SIZE - FFT_HOP_SIZE;
-            }
+            while(!tx_buffer.write(out));
             
-            // NEU: Segmente extrahieren wenn komplett
-            for(uint32_t i = 0; i < state.active_segment_count; i++) {
-                Segment* seg = &state.active_segments[i];
-                if(state.total_samples_processed > seg->end_sample + ANALYSIS_DELAY_SAMPLES) {
-                    extract_and_store_segment(&state, seg);
-                    // Segment aus aktiver Liste entfernen
-                    for(uint32_t j = i; j < state.active_segment_count - 1; j++) {
-                        state.active_segments[j] = state.active_segments[j+1];
-                    }
-                    state.active_segment_count--;
-                    i--;
-                }
-            }
+            gpio_set(LED_B, LOW);
+            gpio_set(TEST_PIN, LOW);
             
-            // NEU: Output aus rekonstruiertem Buffer
-            left_out[n] = read_from_reconstructed_buffer(&state);
-            right_out[n] = left_out[n];
-            
-            state.total_samples_processed++;
+            continue;
         }
         
-        // Button Check
-        handle_button_press(&state);
+        // Step 8: Erstmaliges Einlesen von Signal A
+        if(signal_detected && Signal_count < min_Signal_count)
+        {
+            if(Signal_count == (min_Signal_count - 1))
+            {
+                IF_DEBUG(debug_printf("Signal erkannt. Erste Features eingeschrieben\n"));
+                signalA.energy = left_features.energy;
+                signalA.spectral_bandwidth = left_features.spectral_bandwidth;
+                signalA.spectral_flatness = left_features.spectral_flatness;
+                signalA.spectral_rolloff = left_features.spectral_rolloff;
+                signalA.power = left_features.power;
+                signalA.spectral_centroid = left_features.spectral_centroid;
+                signalA.peak_frequency = left_features.peak_frequency;
+                signalA.peak_magnitude = left_features.peak_magnitude;
+                signalA.flux = left_features.flux;
+                
+                IF_DEBUG(debug_printf("BW: %.2f Hz\n", signalA.spectral_bandwidth));
+                IF_DEBUG(debug_printf("RO: %.2f Hz\n", signalA.spectral_rolloff));
+                IF_DEBUG(debug_printf("FL: %.2f\n", signalA.spectral_flatness));
+                IF_DEBUG(debug_printf("\n"));
+            }
+            Signal_count++;
+        }
         
-        // Output
+        // Step 9: End-Erkennung
+        if(signal_detected && Signal_count >= min_Signal_count)
+        {
+            if(check_signal_end(left_features.energy))
+            {
+                signal_detected = false;
+                reference_energy_set = false;
+                low_energy_counter = 0;
+                Signal_count = 0;
+                write_index = 0;
+                
+                IF_DEBUG(debug_printf("=== SIGNAL KOMPLETT BEENDET - System Reset ===\n"));
+                
+                memset(left_out, 0, sizeof(left_out));
+                memset(right_out, 0, sizeof(right_out));
+                convert_2ch_to_audio_sample(left_out, right_out, out);
+                while(!tx_buffer.write(out));
+                
+                gpio_set(LED_B, LOW);
+                gpio_set(TEST_PIN, LOW);
+                
+                continue;
+            }
+        }
+
+        // Step 10: Signal A Detection
+        score = 0.0f;
+
+        // FIX: Gewichtungen korrigiert - vorher war weightpeakF für alle verwendet
+        if(fabs(left_features.spectral_centroid - signalA.spectral_centroid) < threshCentroid) {
+            score += weightCentroid * (1.0f - normalize(fabs(left_features.spectral_centroid - signalA.spectral_centroid), 0, threshCentroid));
+        }
+
+        if(fabs(left_features.power - signalA.power) < threshPower) {
+            score += weightPower * (1.0f - normalize(fabs(left_features.power - signalA.power), 0, threshPower)); 
+        }
+
+        if(fabs(left_features.energy - signalA.energy) < threshEnergy) {
+            score += weightEnergy * (1.0f - normalize(fabs(left_features.energy - signalA.energy), 0, threshEnergy));
+        }
+
+        if(fabs(left_features.peak_frequency - signalA.peak_frequency) < threshpeakF) {
+            score += weightpeakF * (1.0f - normalize(fabs(left_features.peak_frequency - signalA.peak_frequency), 0, threshpeakF));
+        }
+
+        if(fabs(left_features.spectral_bandwidth - signalA.spectral_bandwidth) < threshBandwidth) {
+            score += weightbandwidth * (1.0f - normalize(fabs(left_features.spectral_bandwidth - signalA.spectral_bandwidth), 0, threshBandwidth));
+        }
+
+        if(fabs(left_features.spectral_rolloff - signalA.spectral_rolloff) < threshRolloff) {
+            score += weightRolloff * (1.0f - normalize(fabs(left_features.spectral_rolloff - signalA.spectral_rolloff), 0, threshRolloff));
+        }
+
+        if(fabs(left_features.spectral_flatness - signalA.spectral_flatness) < threshFlatness) {
+            score += weightFlatness * (1.0f - normalize(fabs(left_features.spectral_flatness - signalA.spectral_flatness), 0, threshFlatness));
+        }
+
+        if(fabs(left_features.flux) < threshFlux) {
+            score += weightFlux * (1.0f - normalize(fabs(left_features.flux), 0, threshFlux));
+        }
+
+        score = score / (weightCentroid + weightPower + weightEnergy + weightpeakF + weightFlux + weightbandwidth + weightFlatness + weightRolloff);
+
+        // Step 11: Debug Output
+        static uint32_t frame_count = 0;
+        frame_count++;
+        if(frame_count % 20 == 0)
+        {
+            IF_DEBUG(debug_printf("SC: %.2f Hz\n", left_features.spectral_centroid));
+            IF_DEBUG(debug_printf("P: %.2f dB\n", left_features.power));
+            IF_DEBUG(debug_printf("PF: %.2f Hz (Mag: %.2f)\n", left_features.peak_frequency, left_features.peak_magnitude));
+            IF_DEBUG(debug_printf("F: %.2f\n", left_features.flux));
+            IF_DEBUG(debug_printf("RO: %.2f Hz\n", left_features.spectral_rolloff));
+            IF_DEBUG(debug_printf("BW: %.2f Hz\n", left_features.spectral_bandwidth));
+            IF_DEBUG(debug_printf("Score: %.2f\n", score));
+            IF_DEBUG(debug_printf("\n"));
+        }
+
+        // Step 12: Signal speichern wenn erkannt
+        // FIX: "and" zu "&&" geändert
+        if (score > score_threshold && Signal_count == min_Signal_count)
+        {
+            memcpy(signalAusgang[write_index], left_fft, BLOCK_SIZE * 2 * sizeof(float32_t));
+
+            // Features aktualisieren (gleitender Durchschnitt)
+            signalA.energy = (left_features.energy + signalA.energy) / 2.0f;
+            signalA.power = (left_features.power + signalA.power) / 2.0f;
+            signalA.spectral_bandwidth = (left_features.spectral_bandwidth + signalA.spectral_bandwidth) / 2.0f;
+            signalA.spectral_flatness = (left_features.spectral_flatness + signalA.spectral_flatness) / 2.0f;
+            signalA.spectral_rolloff = (left_features.spectral_rolloff + signalA.spectral_rolloff) / 2.0f;
+            signalA.spectral_centroid = (left_features.spectral_centroid + signalA.spectral_centroid) / 2.0f;
+            signalA.peak_frequency = (left_features.peak_frequency + signalA.peak_frequency) / 2.0f;
+            signalA.peak_magnitude = (left_features.peak_magnitude + signalA.peak_magnitude) / 2.0f;
+            signalA.flux = (left_features.flux + signalA.flux) / 2.0f;
+
+            write_index++;
+            if(write_index >= SIGNAL_ROWS)
+            {                
+                IF_DEBUG(debug_printf("SignalA Komplett - starte Wiedergabe\n"));
+                write_index = 0;
+                playback_index = 0;
+                is_playing = true;
+            }
+        }
+
+        // Step 13: Ausgabe
+        if(is_playing)
+        {
+            arm_rfft_fast_f32(&FFT_conf, signalAusgang[playback_index], left_float, 1);
+            
+            for(uint32_t i = 0; i < BLOCK_SIZE; i++)
+            {
+                float32_t sample = left_float[i];
+                
+                if(sample > 1.0f) sample = 1.0f;
+                if(sample < -1.0f) sample = -1.0f;
+
+                int16_t out_sample = (int16_t)(sample * 32767.0f);
+
+                left_out[i] = out_sample;
+                right_out[i] = out_sample;
+            }
+            
+            playback_index++;
+            if(playback_index >= SIGNAL_ROWS)
+            {
+                IF_DEBUG(debug_printf("Wiedergabe beendet\n"));
+                playback_index = 0;
+                is_playing = false;
+            }
+        }
+        else
+        {
+            memset(left_out, 0, sizeof(left_out));
+            memset(right_out, 0, sizeof(right_out));
+        }
+
+        // Step 14: Merge channels
         convert_2ch_to_audio_sample(left_out, right_out, out);
         
-        if(!tx_buffer.write(out)) {
-            processing_overruns++;
-        }
+        // Step 15: Write output
+        while(!tx_buffer.write(out));
         
         gpio_set(LED_B, LOW);
+        gpio_set(TEST_PIN, LOW);
     }
     
+    fatal_error();
     return 0;
 }
 
-// ============================================================================
-// CALLBACKS
-// ============================================================================
-
+// DMA callback functions
 uint32_t* get_new_tx_buffer_ptr()
 {
     uint32_t* temp = tx_buffer.get_read_ptr();
-    if(temp == NULL) {
-        buffer_underruns++;
-        return dummy_zeros; 
+    if(temp == nullptr)
+    {
+        fatal_error();
     }
     return temp;
 }
@@ -608,8 +575,9 @@ uint32_t* get_new_tx_buffer_ptr()
 uint32_t* get_new_rx_buffer_ptr()
 {
     uint32_t* temp = rx_buffer.get_write_ptr();
-    if(temp == NULL) {
-        return dummy_zeros; 
+    if(temp == nullptr)
+    {
+        fatal_error();
     }
     return temp;
 }
