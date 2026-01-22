@@ -2,8 +2,8 @@
 #include "arm_math.h"
 #include <math.h>
 
-// *** GEÄNDERT: Doppelte Buffer-Größe durch Kompression ***
-#define SIGNAL_ROWS 160  // War 80, jetzt 160 = ~5.12 Sekunden statt 2.56s
+// Wie viele FFT Blöcke von A in Ausgabe gepuffert werden
+#define SIGNAL_ROWS 160 // 
 
 // CFAR Parameter für Start-Erkennung
 #define CFAR_WINDOW_SIZE 20
@@ -11,21 +11,19 @@
 #define CFAR_THRESHOLD_FACTOR 10.0f
 
 // CFAR Parameter für End-Erkennung
-#define END_DETECTION_FRAMES 100
+#define END_DETECTION_FRAMES 100            
 #define END_ENERGY_THRESHOLD_FACTOR 0.3f
-
-// Overlap-Parameter
-#define HOP_SIZE (BLOCK_SIZE / 2)  // 50% Overlap
-#define OVERLAP_SIZE (BLOCK_SIZE - HOP_SIZE)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Konfigurierbare Parameter
-uint16_t Amount_of_Signals = 3;
+uint16_t Amount_of_Signals = 2;
 
 // Allgemeine FFT Parameter
 float32_t fs = 32000.0f;
 float32_t df = fs / float32_t(BLOCK_SIZE);
 float32_t dT = 1.0f/df;
+
+float32_t alpha = 0.3;
 
 // Parameter für feature Gewichtung
 uint16_t weightCentroid = 3;
@@ -37,12 +35,12 @@ uint16_t weightbandwidth = 3;
 uint16_t weightRolloff = 1;
 
 float32_t score = 0.0f;
-float32_t score_threshold = 0.6f;
+float32_t score_threshold = 0.5f;
 
 uint16_t threshCentroid = 1000;
 uint16_t threshPower = 10;
 uint16_t threshEnergy = 20;
-uint16_t threshpeakF = 1733;
+uint16_t threshpeakF = 1700;
 uint16_t threshFlux = 1;
 uint16_t threshBandwidth = 1000;
 uint16_t threshRolloff = 800;
@@ -56,8 +54,8 @@ float32_t energy_history[CFAR_WINDOW_SIZE] = {0.0f};
 uint32_t energy_history_index = 0;
 uint32_t energy_history_count = 0;
 bool signal_detected = false;
-int Signal_count = 0;
-int min_Signal_count = 25;
+uint16_t Signal_count = 0;
+uint16_t min_Signal_count = 25;
 
 // Variablen für End-Erkennung
 uint32_t low_energy_counter = 0;
@@ -74,24 +72,11 @@ CircularBuffer tx_buffer;
 uint32_t in[BLOCK_SIZE];
 uint32_t out[BLOCK_SIZE];
 int16_t left_in[BLOCK_SIZE];
-int16_t right_in[BLOCK_SIZE];
 int16_t left_out[BLOCK_SIZE];
-int16_t right_out[BLOCK_SIZE];
-
-// Overlap-Buffer für kontinuierliche Verarbeitung
-float32_t overlap_buffer[OVERLAP_SIZE] = {0.0f};
-bool overlap_initialized = false;
 
 // FFT buffers and structures
 float32_t left_fft[BLOCK_SIZE * 2] = {0.0f};
-float32_t right_fft[BLOCK_SIZE * 2] = {0.0f};
-float32_t left_fftPast[BLOCK_SIZE * 2] = {0.0f};
-float32_t right_fftPast[BLOCK_SIZE * 2] = {0.0f};
 float32_t left_float[BLOCK_SIZE];
-float32_t right_float[BLOCK_SIZE];
-
-// Temporärer Buffer für FFT-Input
-float32_t fft_input_buffer[BLOCK_SIZE];
 
 // *** GEÄNDERT: Komprimierter Ausgangspuffer (16-bit statt 32-bit float) ***
 // Spart 50% RAM: 160 Blöcke × 2048 int16 × 2 Bytes = 655 KB statt 1.31 MB
@@ -111,6 +96,8 @@ arm_rfft_fast_instance_f32 FFT_conf;
 // Fensterfunktion
 float32_t window[BLOCK_SIZE] = {1.0f};
 
+float32_t fft_input_buffer[BLOCK_SIZE];
+
 // Feature results
 typedef struct {
     float32_t spectral_centroid;
@@ -121,18 +108,11 @@ typedef struct {
     float32_t peak_frequency;
     float32_t peak_magnitude;
     float32_t flux;
-    float32_t spectral_centroid_past;
-    float32_t spectral_bandwidth_past;
-    float32_t spectral_rolloff_past;
-    float32_t power_past;
-    float32_t energy_past;
-    float32_t peak_frequency_past;
-    float32_t peak_magnitude_past;
-    float32_t flux_past;
 } AudioFeatures;
 
+float32_t magnitude_sum_past = 0.0f;
+
 AudioFeatures left_features;
-AudioFeatures right_features;
 AudioFeatures signalA;
 
 // Ausgabe-State
@@ -182,7 +162,6 @@ void calculate_magnitude(float32_t* fft_data, float32_t* mag, uint32_t fft_size)
     }
 }
 
-float32_t magnitude_sum_past = 0.0f;
 
 // Funktion zur Berechnung der Audio Features
 void extract_features(float32_t* mag, float32_t* mag_past, AudioFeatures* features)
@@ -197,20 +176,9 @@ void extract_features(float32_t* mag, float32_t* mag_past, AudioFeatures* featur
     uint32_t peak_index = 0;
     float32_t flux_sum = 0.0f;
     float32_t sum_log = 0.0f;
-    float32_t invK = 1.0f / (float32_t)(K - 1);
-    float32_t sum_bw = 0.0f;
     bool f_min_found = false;
     float32_t f_min = 0.0f;
     float32_t f_max = 0.0f;
-
-    features->spectral_centroid_past = features->spectral_centroid;
-    features->power_past = features->power;
-    features->energy_past = features->energy;
-    features->peak_frequency_past = features->peak_frequency;
-    features->peak_magnitude_past = features->peak_magnitude;
-    features->flux_past = features->flux;
-    features->spectral_bandwidth_past = features->spectral_bandwidth;
-    features->spectral_rolloff_past = features->spectral_rolloff;
 
     magnitude_sum_past = magnitude_sum;
 
@@ -262,7 +230,6 @@ void extract_features(float32_t* mag, float32_t* mag_past, AudioFeatures* featur
     features->power = 10.0f * log10f(power_sum / (BLOCK_SIZE / 2.0f) + EPS);
     features->peak_frequency = peak_index * df;
     features->peak_magnitude = peak_mag;
-    features->flux = flux_sum;
 }
 
 double normalize(double value, double min, double max) {
@@ -358,9 +325,7 @@ int main()
     debug_printf("%s, %s\n", __DATE__, __TIME__);
     IF_DEBUG(debug_printf("fs: %.2f Hz, N: %d\n", fs, BLOCK_SIZE));
     IF_DEBUG(debug_printf("df: %.2f Hz, dt: %.2f ms\n", df, dT * 1000.0));
-    IF_DEBUG(debug_printf("HOP: %d (50%% overlap)\n", HOP_SIZE));
-    IF_DEBUG(debug_printf("Buffer: %d rows = %.2f sec (compressed)\n", SIGNAL_ROWS, 
-             (SIGNAL_ROWS * HOP_SIZE) / fs));
+    IF_DEBUG(debug_printf("Buffer: %d rows = %.2f sec (compressed)\n", SIGNAL_ROWS,(SIGNAL_ROWS ) / fs));
     
     platform_start();
     signal_detected = false;
@@ -374,27 +339,13 @@ int main()
         gpio_set(TEST_PIN, HIGH);
         
         // Step 2: Split channels
-        convert_audio_sample_to_2ch(in, left_in, right_in);
-        
-        // Step 3: Overlap-Verarbeitung
-        for(uint32_t n = 0; n < OVERLAP_SIZE; n++)
-        {
-            fft_input_buffer[n] = overlap_buffer[n];
-        }
-        
-        for(uint32_t n = 0; n < HOP_SIZE; n++)
-        {
-            fft_input_buffer[OVERLAP_SIZE + n] = (float32_t)left_in[n] / 32768.0f;
-        }
-        
-        for(uint32_t n = 0; n < OVERLAP_SIZE; n++)
-        {
-            overlap_buffer[n] = (float32_t)left_in[HOP_SIZE + n] / 32768.0f;
-        }
-        
+        convert_audio_sample_to_2ch(in, left_in, left_in);
+
         for(uint32_t n = 0; n < BLOCK_SIZE; n++)
         {
-            left_float[n] = fft_input_buffer[n] * window[n];
+            fft_input_buffer[n] = (float32_t)left_in[n] / 32768.0f;       //neue zweite hälfte in previous buffer
+            
+            left_float[n] = fft_input_buffer[n] * window[n];                        
         }
 
         // Step 4: FFT
@@ -413,8 +364,7 @@ int main()
             signal_detected = cfar_detector(left_features.energy);
             
             memset(left_out, 0, sizeof(left_out));
-            memset(right_out, 0, sizeof(right_out));
-            convert_2ch_to_audio_sample(left_out, right_out, out);
+            convert_2ch_to_audio_sample(left_out, left_out, out);
             
             while(!tx_buffer.write(out));
             
@@ -452,11 +402,9 @@ int main()
                 Signal_count = 0;
                 write_index = 0;
                 
-                memset(overlap_buffer, 0, sizeof(overlap_buffer));
                 
                 memset(left_out, 0, sizeof(left_out));
-                memset(right_out, 0, sizeof(right_out));
-                convert_2ch_to_audio_sample(left_out, right_out, out);
+                convert_2ch_to_audio_sample(left_out, left_out, out);
                 while(!tx_buffer.write(out));
                 
                 gpio_set(LED_B, LOW);
@@ -506,17 +454,18 @@ int main()
         // Step 11: Signal speichern wenn erkannt (MIT KOMPRESSION)
         if (score > score_threshold && Signal_count == min_Signal_count)
         {
+            IF_DEBUG(debug_printf("Signal_A\n"));
             // *** GEÄNDERT: FFT-Daten komprimieren vor dem Speichern ***
             compress_fft(left_fft, signalAusgang_compressed[write_index], BLOCK_SIZE * 2);
 
-            signalA.energy = (left_features.energy + signalA.energy) / 2.0f;
-            signalA.power = (left_features.power + signalA.power) / 2.0f;
-            signalA.spectral_bandwidth = (left_features.spectral_bandwidth + signalA.spectral_bandwidth) / 2.0f;
-            signalA.spectral_rolloff = (left_features.spectral_rolloff + signalA.spectral_rolloff) / 2.0f;
-            signalA.spectral_centroid = (left_features.spectral_centroid + signalA.spectral_centroid) / 2.0f;
-            signalA.peak_frequency = (left_features.peak_frequency + signalA.peak_frequency) / 2.0f;
-            signalA.peak_magnitude = (left_features.peak_magnitude + signalA.peak_magnitude) / 2.0f;
-            signalA.flux = (left_features.flux + signalA.flux) / 2.0f;
+            signalA.spectral_centroid = (1-alpha)*signalA.spectral_centroid + alpha*left_features.spectral_centroid;
+            signalA.power = (1-alpha)*signalA.power + alpha*left_features.power;
+            signalA.energy = (1-alpha)*signalA.energy + alpha*left_features.energy;
+            signalA.peak_frequency = (1-alpha)*signalA.peak_frequency + alpha*left_features.peak_frequency;
+            signalA.spectral_bandwidth = (1-alpha)*signalA.spectral_bandwidth + alpha*left_features.spectral_bandwidth;
+            signalA.spectral_rolloff = (1-alpha)*signalA.spectral_rolloff + alpha*left_features.spectral_rolloff;
+            signalA.peak_magnitude = (1-alpha)*signalA.peak_magnitude + alpha*left_features.peak_magnitude;
+            signalA.flux = (1-alpha)*signalA.flux + alpha*left_features.flux;
 
             write_index++;
             if(write_index >= SIGNAL_ROWS)
@@ -545,7 +494,6 @@ int main()
                 int16_t out_sample = (int16_t)(sample * 32767.0f);
 
                 left_out[i] = out_sample;
-                right_out[i] = out_sample;
             }
             
             playback_index++;
@@ -558,11 +506,10 @@ int main()
         else
         {
             memset(left_out, 0, sizeof(left_out));
-            memset(right_out, 0, sizeof(right_out));
         }
 
         // Step 13: Merge channels
-        convert_2ch_to_audio_sample(left_out, right_out, out);
+        convert_2ch_to_audio_sample(left_out, left_out, out);
         
         // Step 14: Write output
         while(!tx_buffer.write(out));
