@@ -9,7 +9,7 @@
 #include <math.h>
 
 // Wie viele FFT Blöcke von A in Ausgabe gepuffert werden
-#define SIGNAL_ROWS 160 // 
+#define SIGNAL_ROWS 160
 
 // CFAR Parameter für Start-Erkennung
 #define CFAR_WINDOW_SIZE 20
@@ -84,12 +84,12 @@ int16_t left_out[BLOCK_SIZE];
 float32_t left_fft[BLOCK_SIZE * 2] = {0.0f};
 float32_t left_float[BLOCK_SIZE];
 
-// *** GEÄNDERT: Komprimierter Ausgangspuffer (16-bit statt 32-bit float) ***
-// Spart 50% RAM: 160 Blöcke × 2048 int16 × 2 Bytes = 655 KB statt 1.31 MB
+// Komprimierter Ausgangspuffer (16-bit statt 32-bit float)
+// Spart 50% RAM: 160 Blöcke × 256 int16 × 2 Bytes = 163 KB statt 327 KB (bei insgesamt 188 KB RAM)
 int16_t signalAusgang_compressed[SIGNAL_ROWS][BLOCK_SIZE*2] = {0};
 uint32_t write_index = 0;
 
-// *** NEU: Temporärer Dekompression-Buffer ***
+// Temporärer Dekompression-Buffer
 float32_t decompression_buffer[BLOCK_SIZE * 2];
 
 // Feature extraction buffers
@@ -99,7 +99,7 @@ float32_t magnitude_past[BLOCK_SIZE / 2] = {0.0f};
 // ARM CMSIS DSP FFT instances
 arm_rfft_fast_instance_f32 FFT_conf;
 
-// Fensterfunktion
+// Fensterfunktion (by default Rechteck)
 float32_t window[BLOCK_SIZE] = {1.0f};
 
 float32_t fft_input_buffer[BLOCK_SIZE];
@@ -124,8 +124,6 @@ AudioFeatures signalA;
 // Ausgabe-State
 uint32_t playback_index = 0;
 bool is_playing = false;
-
-// *** NEU: Kompression/Dekompression Funktionen ***
 
 // Komprimiert FFT-Daten von float32 zu int16
 void compress_fft(float32_t* fft_float, int16_t* fft_int16, uint32_t length)
@@ -173,45 +171,52 @@ void calculate_magnitude(float32_t* fft_data, float32_t* mag, uint32_t fft_size)
 void extract_features(float32_t* mag, float32_t* mag_past, AudioFeatures* features)
 {
     const float32_t EPS = 1e-6f;
-  
+
+    // Spectral centroid
     float32_t magnitude_sum = 0.0f;
     float32_t weighted_sum = 0.0f;
+    // energy and power
     float32_t power_sum = 0.0f;
+    // Peak Frequency index and amplitude
     float32_t peak_mag = 0.0f;
     uint32_t peak_index = 0;
+    // Flux
     float32_t flux_sum = 0.0f;
-    float32_t sum_log = 0.0f;
+    magnitude_sum_past = magnitude_sum;
+    // bandwidth
     bool f_min_found = false;
     float32_t f_min = 0.0f;
     float32_t f_max = 0.0f;
 
-    magnitude_sum_past = magnitude_sum;
 
+    // feature calculation
     for(uint32_t i = 1; i < BLOCK_SIZE / 2; i++)
     {
+        // spectral centroid
         if (mag[i] > 0.01f) {magnitude_sum += mag[i];}
         if(mag[i] > 0.01f) {weighted_sum += (i * df) * mag[i];}
 
+        // peak frequency index + magnitude
         if(mag[i] > peak_mag) {
             peak_mag = mag[i];
             peak_index = i;
         }
 
+        // power sum for energy and power
         power_sum += mag[i] * mag[i];
 
-        if(fabs(mag[i] - mag_past[i]) > 0.0f) { 
-            flux_sum += (mag[i] - mag_past[i]) * (mag[i] - mag_past[i]);
-        }
+        // flux
+        if(fabs(mag[i] - mag_past[i]) > 0.0f) {flux_sum += (mag[i] - mag_past[i]) * (mag[i] - mag_past[i]);}
 
-        if(mag[i]> (peak_mag * (1.0f/sqrtf(2.0f))) && !f_min_found) {
+        // bandwidth (everything within 3dB of peak magnitude)
+        if(mag[i] > (peak_mag * 0.707f) && !f_min_found) {
             f_min = i * df;
             f_min_found = true;
         }
-        if(mag[i] > (peak_mag * (1.0f/sqrtf(2.0f)))){
+        if(mag[i] > (peak_mag * 0.707f)){
             f_max = i * df;
         }
         
-        sum_log += logf(mag[i] + EPS);
     }
 
     features->spectral_rolloff = fs * 0.5f;
@@ -219,18 +224,21 @@ void extract_features(float32_t* mag, float32_t* mag_past, AudioFeatures* featur
     for(uint32_t i = 1; i < BLOCK_SIZE / 2; i++)
     {
         acc += mag[i];
-        if(acc >=  0.85f * magnitude_sum) {
+        if(acc >= 0.85f * magnitude_sum) {
             features->spectral_rolloff = (float32_t)i * df;
             break;
         }
     }
 
+    // spectral centroid
     features->spectral_centroid = (magnitude_sum > EPS) ? (weighted_sum / magnitude_sum) : 0.0f;
+    // flux
     features->flux = sqrtf(flux_sum) / (magnitude_sum + EPS);
-
+    // bandwith
     features->spectral_bandwidth = f_max-f_min;
+    // energy, power, peak frequency index + amplitude
     features->energy = power_sum;
-    features->power = 10.0f * log10f(power_sum / (BLOCK_SIZE / 2.0f) + EPS);
+    features->power = 10.0f * log10f(power_sum / (BLOCK_SIZE / 2.0f) + EPS); // in dB
     features->peak_frequency = peak_index * df;
     features->peak_magnitude = peak_mag;
 }
@@ -323,12 +331,14 @@ int main()
     
     arm_status status = arm_rfft_fast_init_f32(&FFT_conf, BLOCK_SIZE);
     
+    // windowfunctions
     arm_hamming_f32(window, BLOCK_SIZE);
+    // arm_hanning_f32(window, BLOCK_SIZE);
     
     debug_printf("%s, %s\n", __DATE__, __TIME__);
     IF_DEBUG(debug_printf("fs: %.2f Hz, N: %d\n", fs, BLOCK_SIZE));
     IF_DEBUG(debug_printf("df: %.2f Hz, dt: %.2f ms\n", df, dT * 1000.0));
-    IF_DEBUG(debug_printf("Buffer: %d rows = %.2f sec (compressed)\n", SIGNAL_ROWS,(SIGNAL_ROWS ) / fs));
+    IF_DEBUG(debug_printf("Buffer: %d rows = %.2f sec (compressed)\n", SIGNAL_ROWS,(SIGNAL_ROWS) / fs));
     
     platform_start();
     signal_detected = false;
@@ -346,8 +356,7 @@ int main()
 
         for(uint32_t n = 0; n < BLOCK_SIZE; n++)
         {
-            fft_input_buffer[n] = (float32_t)left_in[n] / 32768.0f;       //neue zweite hälfte in previous buffer
-            
+            fft_input_buffer[n] = (float32_t)left_in[n] / 32768.0f;
             left_float[n] = fft_input_buffer[n] * window[n];                        
         }
 
@@ -460,17 +469,16 @@ int main()
         if (score > score_threshold && Signal_count == min_Signal_count)
         {
             //IF_DEBUG(debug_printf("Signal_A\n"));
-            // *** GEÄNDERT: FFT-Daten komprimieren vor dem Speichern ***
             compress_fft(left_fft, signalAusgang_compressed[write_index], BLOCK_SIZE * 2);
 
-            signalA.spectral_centroid = (1-alpha)*signalA.spectral_centroid + alpha*left_features.spectral_centroid;
-            signalA.power = (1-alpha)*signalA.power + alpha*left_features.power;
-            signalA.energy = (1-alpha)*signalA.energy + alpha*left_features.energy;
-            signalA.peak_frequency = (1-alpha)*signalA.peak_frequency + alpha*left_features.peak_frequency;
-            signalA.spectral_bandwidth = (1-alpha)*signalA.spectral_bandwidth + alpha*left_features.spectral_bandwidth;
-            signalA.spectral_rolloff = (1-alpha)*signalA.spectral_rolloff + alpha*left_features.spectral_rolloff;
-            signalA.peak_magnitude = (1-alpha)*signalA.peak_magnitude + alpha*left_features.peak_magnitude;
-            signalA.flux = (1-alpha)*signalA.flux + alpha*left_features.flux;
+            signalA.spectral_centroid = (1.0f-alpha)*signalA.spectral_centroid + alpha*left_features.spectral_centroid;
+            signalA.power = (1.0f-alpha)*signalA.power + alpha*left_features.power;
+            signalA.energy = (1.0f-alpha)*signalA.energy + alpha*left_features.energy;
+            signalA.peak_frequency = (1.0f-alpha)*signalA.peak_frequency + alpha*left_features.peak_frequency;
+            signalA.spectral_bandwidth = (1.0f-alpha)*signalA.spectral_bandwidth + alpha*left_features.spectral_bandwidth;
+            signalA.spectral_rolloff = (1.0f-alpha)*signalA.spectral_rolloff + alpha*left_features.spectral_rolloff;
+            signalA.peak_magnitude = (1.0f-alpha)*signalA.peak_magnitude + alpha*left_features.peak_magnitude;
+            signalA.flux = (1.0f-alpha)*signalA.flux + alpha*left_features.flux;
 
             write_index++;
             if(write_index >= SIGNAL_ROWS)
@@ -485,9 +493,9 @@ int main()
         if(is_playing)
         {
             //debug_printf("Signal Ausgabe\n");
-            // *** GEÄNDERT: FFT-Daten dekomprimieren vor IFFT ***
             decompress_fft(signalAusgang_compressed[playback_index], decompression_buffer, BLOCK_SIZE * 2);
             
+            // IFFT
             arm_rfft_fast_f32(&FFT_conf, decompression_buffer, left_float, 1);
             
             for(uint32_t i = 0; i < BLOCK_SIZE; i++)
