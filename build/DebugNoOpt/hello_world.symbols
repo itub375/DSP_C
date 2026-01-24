@@ -215,17 +215,17 @@
 00002ef4 00000052 W convert_audio_sample_to_2ch(unsigned long*, short*, short*)	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/utils/platform.h:70
 00002f46 0000005e W convert_2ch_to_audio_sample(short*, short*, unsigned long*)	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/utils/platform.h:87
 00002fa4 00000020 W std::fabs(float)	C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/arm-none-eabi/include/c++/13.3.1/cmath:234
-00002fc4 000000a4 T compress_fft(float*, short*, unsigned long)	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:125
-00003068 00000060 T decompress_fft(short*, float*, unsigned long)	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:144
-000030c8 00000094 T calculate_magnitude(float*, float*, unsigned long)	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:155
-0000315c 000003dc T extract_features(float*, float*, AudioFeatures*)	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:167
-00003538 0000009c T normalize(double, double, double)	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:235
-000035d4 00000118 T cfar_detector(float)	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:244
-000036ec 000000dc T check_signal_end(float, float)	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:280
-000037c8 00000da4 T main	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:310
-0000456c 00000028 T get_new_tx_buffer_ptr()	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:525
-00004594 00000028 T get_new_rx_buffer_ptr()	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:535
-000045bc 00000054 t __static_initialization_and_destruction_0()	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:543
+00002fc4 000000a4 T compress_fft(float*, short*, unsigned long)	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:131
+00003068 00000060 T decompress_fft(short*, float*, unsigned long)	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:150
+000030c8 00000094 T calculate_magnitude(float*, float*, unsigned long)	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:161
+0000315c 000003cc T extract_features(float*, float*, AudioFeatures*)	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:173
+00003528 0000009c T normalize(double, double, double)	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:238
+000035c4 00000118 T cfar_detector(float)	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:247
+000036dc 000000dc T check_signal_end(float, float)	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:283
+000037b8 00000db4 T main	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:313
+0000456c 00000028 T get_new_tx_buffer_ptr()	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:531
+00004594 00000028 T get_new_rx_buffer_ptr()	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:541
+000045bc 00000054 t __static_initialization_and_destruction_0()	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:549
 00004610 0000000a t _GLOBAL__sub_I_Amount_of_Signals
 0000461c 0000003c t __NVIC_EnableIRQ	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS/Core/Include/core_cm4.h:1794
 00004658 00000048 t __NVIC_DisableIRQ	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS/Core/Include/core_cm4.h:1832
@@ -414,58 +414,58 @@
 0000f3ac 0000004e T __fixdfsi
 0000f3fc T _init
 0000f408 T _fini
-0000f4ac 00000080 T twiddleCoef_16	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:8523
-0000f52c 00000100 T twiddleCoef_32	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:8556
-0000f62c 00000200 T twiddleCoef_64	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:8605
-0000f82c 00000400 T twiddleCoef_128	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:8686
-0000fc2c 00000800 T twiddleCoef_256	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:8831
-0001042c 00001000 T twiddleCoef_512	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:9104
-0001142c 00002000 T twiddleCoef_1024	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:9633
-0001342c 00004000 T twiddleCoef_2048	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:10674
-0001742c 00000028 T armBitRevIndexTable16	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:25057
-00017454 00000060 T armBitRevIndexTable32	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:25063
-000174b4 00000070 T armBitRevIndexTable64	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:25071
-00017524 000001a0 T armBitRevIndexTable128	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:25081
-000176c4 00000370 T armBitRevIndexTable256	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:25099
-00017a34 00000380 T armBitRevIndexTable512	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:25137
-00017db4 00000e10 T armBitRevIndexTable1024	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:25177
-00018bc4 00001dc0 T armBitRevIndexTable2048	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:25329
-0001a984 00000080 T twiddleCoef_rfft_32	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:30820
-0001aa04 00000100 T twiddleCoef_rfft_64	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:30839
-0001ab04 00000200 T twiddleCoef_rfft_128	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:30874
-0001ad04 00000400 T twiddleCoef_rfft_256	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:30941
-0001b104 00000800 T twiddleCoef_rfft_512	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:31072
-0001b904 00001000 T twiddleCoef_rfft_1024	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:31331
-0001c904 00002000 T twiddleCoef_rfft_2048	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:31846
-0001e904 00004000 T twiddleCoef_rfft_4096	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:32873
-00022904 00000010 T arm_cfft_sR_f32_len16	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_const_structs.c:79
-00022914 00000010 T arm_cfft_sR_f32_len32	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_const_structs.c:84
-00022924 00000010 T arm_cfft_sR_f32_len64	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_const_structs.c:88
-00022934 00000010 T arm_cfft_sR_f32_len128	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_const_structs.c:92
-00022944 00000010 T arm_cfft_sR_f32_len256	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_const_structs.c:96
-00022954 00000010 T arm_cfft_sR_f32_len512	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_const_structs.c:100
-00022964 00000010 T arm_cfft_sR_f32_len1024	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_const_structs.c:104
-00022974 00000010 T arm_cfft_sR_f32_len2048	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_const_structs.c:108
-00022b2c 00000010 t zeroes.0
-00022b3c 00000010 t blanks.1
-00022b4c 0000000c t p05.0
-00022b58 00000028 T __mprec_bigtens
-00022b80 000000c8 T __mprec_tens
-00022c48 00000101 T _ctype_
-00022d4c 00000010 t zeroes.0
-00022d5c 00000010 t blanks.1
-00022d6c 00000080 t npio2_hw
-00022dec 00000318 t two_over_pi
-00023104 0000002c t PIo2
-00023130 0000000c t init_jk
-0002313c t __EH_FRAME_BEGIN__
-0002313c t __FRAME_END__
-000231f0 T __exidx_start
-000231f8 R __copy_table_start__
-000231f8 R __exidx_end
-00023204 R __copy_table_end__
-00023204 N __zero_table_end__
-00023204 N __zero_table_start__
+0000f4d0 00000080 T twiddleCoef_16	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:8523
+0000f550 00000100 T twiddleCoef_32	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:8556
+0000f650 00000200 T twiddleCoef_64	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:8605
+0000f850 00000400 T twiddleCoef_128	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:8686
+0000fc50 00000800 T twiddleCoef_256	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:8831
+00010450 00001000 T twiddleCoef_512	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:9104
+00011450 00002000 T twiddleCoef_1024	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:9633
+00013450 00004000 T twiddleCoef_2048	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:10674
+00017450 00000028 T armBitRevIndexTable16	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:25057
+00017478 00000060 T armBitRevIndexTable32	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:25063
+000174d8 00000070 T armBitRevIndexTable64	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:25071
+00017548 000001a0 T armBitRevIndexTable128	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:25081
+000176e8 00000370 T armBitRevIndexTable256	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:25099
+00017a58 00000380 T armBitRevIndexTable512	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:25137
+00017dd8 00000e10 T armBitRevIndexTable1024	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:25177
+00018be8 00001dc0 T armBitRevIndexTable2048	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:25329
+0001a9a8 00000080 T twiddleCoef_rfft_32	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:30820
+0001aa28 00000100 T twiddleCoef_rfft_64	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:30839
+0001ab28 00000200 T twiddleCoef_rfft_128	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:30874
+0001ad28 00000400 T twiddleCoef_rfft_256	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:30941
+0001b128 00000800 T twiddleCoef_rfft_512	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:31072
+0001b928 00001000 T twiddleCoef_rfft_1024	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:31331
+0001c928 00002000 T twiddleCoef_rfft_2048	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:31846
+0001e928 00004000 T twiddleCoef_rfft_4096	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_common_tables.c:32873
+00022928 00000010 T arm_cfft_sR_f32_len16	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_const_structs.c:79
+00022938 00000010 T arm_cfft_sR_f32_len32	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_const_structs.c:84
+00022948 00000010 T arm_cfft_sR_f32_len64	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_const_structs.c:88
+00022958 00000010 T arm_cfft_sR_f32_len128	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_const_structs.c:92
+00022968 00000010 T arm_cfft_sR_f32_len256	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_const_structs.c:96
+00022978 00000010 T arm_cfft_sR_f32_len512	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_const_structs.c:100
+00022988 00000010 T arm_cfft_sR_f32_len1024	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_const_structs.c:104
+00022998 00000010 T arm_cfft_sR_f32_len2048	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/CMSIS_DSP/Source/CommonTables/arm_const_structs.c:108
+00022b50 00000010 t zeroes.0
+00022b60 00000010 t blanks.1
+00022b70 0000000c t p05.0
+00022b80 00000028 T __mprec_bigtens
+00022ba8 000000c8 T __mprec_tens
+00022c70 00000101 T _ctype_
+00022d74 00000010 t zeroes.0
+00022d84 00000010 t blanks.1
+00022d94 00000080 t npio2_hw
+00022e14 00000318 t two_over_pi
+0002312c 0000002c t PIo2
+00023158 0000000c t init_jk
+00023164 t __EH_FRAME_BEGIN__
+00023164 t __FRAME_END__
+00023218 T __exidx_start
+00023220 R __copy_table_start__
+00023220 R __exidx_end
+0002322c R __copy_table_end__
+0002322c N __zero_table_end__
+0002322c N __zero_table_start__
 00030000 A __RAM_SIZE
 00200000 A __ROM_SIZE
 1ffd0000 D __data_start__
@@ -473,26 +473,26 @@
 1ffd0000 00000004 D SystemCoreClock	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/PDL/system_s6e2cc.c:48
 1ffd0004 00000048 D m_astcMfsInstanceDataLut	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/PDL/mfs.c:43
 1ffd004c 00000030 D m_astcI2sInstanceDataLut	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/PDL/i2s.c:42
-1ffd007c 00000002 D Amount_of_Signals	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:19
-1ffd0080 00000004 D fs	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:22
-1ffd0084 00000004 D alpha	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:26
-1ffd0088 00000002 D weightCentroid	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:29
-1ffd008a 00000002 D weightPower	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:30
-1ffd008c 00000002 D weightEnergy	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:31
-1ffd008e 00000002 D weightpeakF	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:32
-1ffd0090 00000002 D weightFlux	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:33
-1ffd0092 00000002 D weightbandwidth	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:34
-1ffd0094 00000002 D weightRolloff	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:35
-1ffd0098 00000004 D score_threshold	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:38
-1ffd009c 00000002 D threshCentroid	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:40
-1ffd009e 00000002 D threshPower	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:41
-1ffd00a0 00000002 D threshEnergy	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:42
-1ffd00a2 00000002 D threshpeakF	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:43
-1ffd00a4 00000002 D threshFlux	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:44
-1ffd00a6 00000002 D threshBandwidth	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:45
-1ffd00a8 00000002 D threshRolloff	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:46
-1ffd00aa 00000002 D min_Signal_count	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:58
-1ffd00ac 00000400 D window	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:97
+1ffd007c 00000002 D Amount_of_Signals	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:25
+1ffd0080 00000004 D fs	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:28
+1ffd0084 00000004 D alpha	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:32
+1ffd0088 00000002 D weightCentroid	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:35
+1ffd008a 00000002 D weightPower	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:36
+1ffd008c 00000002 D weightEnergy	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:37
+1ffd008e 00000002 D weightpeakF	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:38
+1ffd0090 00000002 D weightFlux	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:39
+1ffd0092 00000002 D weightbandwidth	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:40
+1ffd0094 00000002 D weightRolloff	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:41
+1ffd0098 00000004 D score_threshold	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:44
+1ffd009c 00000002 D threshCentroid	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:46
+1ffd009e 00000002 D threshPower	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:47
+1ffd00a0 00000002 D threshEnergy	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:48
+1ffd00a2 00000002 D threshpeakF	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:49
+1ffd00a4 00000002 D threshFlux	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:50
+1ffd00a6 00000002 D threshBandwidth	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:51
+1ffd00a8 00000002 D threshRolloff	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:52
+1ffd00aa 00000002 D min_Signal_count	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:64
+1ffd00ac 00000400 D window	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:103
 1ffd04ac 0000000c D __sglue
 1ffd04b8 00000004 D _impure_ptr
 1ffd04c0 00000140 D _impure_data
@@ -518,38 +518,38 @@
 1ffd0bac 00000002 B u16LeftHpOut	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/PDL/wm8731.c:61
 1ffd0bae 00000002 B u16RightHpOut	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/PDL/wm8731.c:61
 1ffd0bb0 00000038 B stcDES	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/utils/platform.cpp:105
-1ffd0be8 00000004 B df	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:23
-1ffd0bec 00000004 B dT	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:24
-1ffd0bf0 00000004 B score	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:37
-1ffd0bf4 00000002 B flux_counter	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:48
-1ffd0bf8 00000050 B energy_history	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:53
-1ffd0c48 00000004 B energy_history_index	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:54
-1ffd0c4c 00000004 B energy_history_count	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:55
-1ffd0c50 00000001 B signal_detected	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:56
-1ffd0c52 00000002 B Signal_count	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:57
-1ffd0c54 00000004 B low_energy_counter	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:61
-1ffd0c58 00000004 B signal_energy_reference	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:62
-1ffd0c5c 00000001 B reference_energy_set	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:63
-1ffd0c60 00000c0c B rx_buffer	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:68
-1ffd186c 00000c0c B tx_buffer	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:69
-1ffd2478 00000400 B in	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:72
-1ffd2878 00000400 B out	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:73
-1ffd2c78 00000200 B left_in	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:74
-1ffd2e78 00000200 B left_out	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:75
-1ffd3078 00000800 B left_fft	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:78
-1ffd3878 00000400 B left_float	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:79
-1ffd3c78 00028000 B signalAusgang_compressed	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:83
-1fffbc78 00000004 B write_index	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:84
-1fffbc7c 00000800 B decompression_buffer	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:87
-1fffc47c 00000200 B magnitude	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:90
-1fffc67c 00000200 B magnitude_past	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:91
-1fffc87c 00000018 B FFT_conf	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:94
-1fffc894 00000400 B fft_input_buffer	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:99
-1fffcc94 00000004 B magnitude_sum_past	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:113
-1fffcc98 00000020 B left_features	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:115
-1fffccb8 00000020 B signalA	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:116
-1fffccd8 00000004 B playback_index	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:119
-1fffccdc 00000001 B is_playing	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:120
+1ffd0be8 00000004 B df	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:29
+1ffd0bec 00000004 B dT	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:30
+1ffd0bf0 00000004 B score	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:43
+1ffd0bf4 00000002 B flux_counter	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:54
+1ffd0bf8 00000050 B energy_history	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:59
+1ffd0c48 00000004 B energy_history_index	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:60
+1ffd0c4c 00000004 B energy_history_count	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:61
+1ffd0c50 00000001 B signal_detected	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:62
+1ffd0c52 00000002 B Signal_count	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:63
+1ffd0c54 00000004 B low_energy_counter	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:67
+1ffd0c58 00000004 B signal_energy_reference	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:68
+1ffd0c5c 00000001 B reference_energy_set	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:69
+1ffd0c60 00000c0c B rx_buffer	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:74
+1ffd186c 00000c0c B tx_buffer	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:75
+1ffd2478 00000400 B in	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:78
+1ffd2878 00000400 B out	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:79
+1ffd2c78 00000200 B left_in	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:80
+1ffd2e78 00000200 B left_out	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:81
+1ffd3078 00000800 B left_fft	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:84
+1ffd3878 00000400 B left_float	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:85
+1ffd3c78 00028000 B signalAusgang_compressed	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:89
+1fffbc78 00000004 B write_index	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:90
+1fffbc7c 00000800 B decompression_buffer	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:93
+1fffc47c 00000200 B magnitude	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:96
+1fffc67c 00000200 B magnitude_past	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:97
+1fffc87c 00000018 B FFT_conf	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:100
+1fffc894 00000400 B fft_input_buffer	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:105
+1fffcc94 00000004 B magnitude_sum_past	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:119
+1fffcc98 00000020 B left_features	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:121
+1fffccb8 00000020 B signalA	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:122
+1fffccd8 00000004 B playback_index	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:125
+1fffccdc 00000001 B is_playing	C:/eigene Programme/DSP_lab_AIO-windows/hello_world/hello_world.cpp:126
 1fffccdd b completed.1
 1fffcce0 b object.0
 1fffccf8 00000138 B __sf

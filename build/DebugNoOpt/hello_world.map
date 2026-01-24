@@ -3061,7 +3061,7 @@ LOAD C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.
 LOAD C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libm.a
 END GROUP
 
-.text           0x00000000    0x231f0
+.text           0x00000000    0x23218
  *(.vectors)
  .vectors       0x00000000      0x240 CMakeFiles/hello_world.axf.dir/device/startup_S6E2CCAJOA.c.obj
                 0x00000000                __Vectors
@@ -3432,19 +3432,19 @@ END GROUP
                 0x000030c8       0x94 CMakeFiles/hello_world.axf.dir/hello_world.cpp.obj
                 0x000030c8                calculate_magnitude(float*, float*, unsigned long)
  .text._Z16extract_featuresPfS_P13AudioFeatures
-                0x0000315c      0x3dc CMakeFiles/hello_world.axf.dir/hello_world.cpp.obj
+                0x0000315c      0x3cc CMakeFiles/hello_world.axf.dir/hello_world.cpp.obj
                 0x0000315c                extract_features(float*, float*, AudioFeatures*)
  .text._Z9normalizeddd
-                0x00003538       0x9c CMakeFiles/hello_world.axf.dir/hello_world.cpp.obj
-                0x00003538                normalize(double, double, double)
+                0x00003528       0x9c CMakeFiles/hello_world.axf.dir/hello_world.cpp.obj
+                0x00003528                normalize(double, double, double)
  .text._Z13cfar_detectorf
-                0x000035d4      0x118 CMakeFiles/hello_world.axf.dir/hello_world.cpp.obj
-                0x000035d4                cfar_detector(float)
+                0x000035c4      0x118 CMakeFiles/hello_world.axf.dir/hello_world.cpp.obj
+                0x000035c4                cfar_detector(float)
  .text._Z16check_signal_endff
-                0x000036ec       0xdc CMakeFiles/hello_world.axf.dir/hello_world.cpp.obj
-                0x000036ec                check_signal_end(float, float)
- .text.main     0x000037c8      0xda4 CMakeFiles/hello_world.axf.dir/hello_world.cpp.obj
-                0x000037c8                main
+                0x000036dc       0xdc CMakeFiles/hello_world.axf.dir/hello_world.cpp.obj
+                0x000036dc                check_signal_end(float, float)
+ .text.main     0x000037b8      0xdb4 CMakeFiles/hello_world.axf.dir/hello_world.cpp.obj
+                0x000037b8                main
  .text._Z21get_new_tx_buffer_ptrv
                 0x0000456c       0x28 CMakeFiles/hello_world.axf.dir/hello_world.cpp.obj
                 0x0000456c                get_new_tx_buffer_ptr()
@@ -3901,204 +3901,204 @@ END GROUP
  *(.rodata*)
  .rodata        0x0000f414        0xd CMakeFiles/hello_world.axf.dir/utils/debug_utils.cpp.obj
  *fill*         0x0000f421        0x3 
- .rodata        0x0000f424       0x86 CMakeFiles/hello_world.axf.dir/hello_world.cpp.obj
- *fill*         0x0000f4aa        0x2 
+ .rodata        0x0000f424       0xac CMakeFiles/hello_world.axf.dir/hello_world.cpp.obj
  .rodata.twiddleCoef_16
-                0x0000f4ac       0x80 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
-                0x0000f4ac                twiddleCoef_16
+                0x0000f4d0       0x80 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
+                0x0000f4d0                twiddleCoef_16
  .rodata.twiddleCoef_32
-                0x0000f52c      0x100 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
-                0x0000f52c                twiddleCoef_32
+                0x0000f550      0x100 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
+                0x0000f550                twiddleCoef_32
  .rodata.twiddleCoef_64
-                0x0000f62c      0x200 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
-                0x0000f62c                twiddleCoef_64
+                0x0000f650      0x200 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
+                0x0000f650                twiddleCoef_64
  .rodata.twiddleCoef_128
-                0x0000f82c      0x400 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
-                0x0000f82c                twiddleCoef_128
+                0x0000f850      0x400 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
+                0x0000f850                twiddleCoef_128
  .rodata.twiddleCoef_256
-                0x0000fc2c      0x800 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
-                0x0000fc2c                twiddleCoef_256
+                0x0000fc50      0x800 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
+                0x0000fc50                twiddleCoef_256
  .rodata.twiddleCoef_512
-                0x0001042c     0x1000 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
-                0x0001042c                twiddleCoef_512
+                0x00010450     0x1000 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
+                0x00010450                twiddleCoef_512
  .rodata.twiddleCoef_1024
-                0x0001142c     0x2000 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
-                0x0001142c                twiddleCoef_1024
+                0x00011450     0x2000 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
+                0x00011450                twiddleCoef_1024
  .rodata.twiddleCoef_2048
-                0x0001342c     0x4000 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
-                0x0001342c                twiddleCoef_2048
+                0x00013450     0x4000 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
+                0x00013450                twiddleCoef_2048
  .rodata.armBitRevIndexTable16
-                0x0001742c       0x28 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
-                0x0001742c                armBitRevIndexTable16
+                0x00017450       0x28 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
+                0x00017450                armBitRevIndexTable16
  .rodata.armBitRevIndexTable32
-                0x00017454       0x60 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
-                0x00017454                armBitRevIndexTable32
+                0x00017478       0x60 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
+                0x00017478                armBitRevIndexTable32
  .rodata.armBitRevIndexTable64
-                0x000174b4       0x70 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
-                0x000174b4                armBitRevIndexTable64
+                0x000174d8       0x70 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
+                0x000174d8                armBitRevIndexTable64
  .rodata.armBitRevIndexTable128
-                0x00017524      0x1a0 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
-                0x00017524                armBitRevIndexTable128
+                0x00017548      0x1a0 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
+                0x00017548                armBitRevIndexTable128
  .rodata.armBitRevIndexTable256
-                0x000176c4      0x370 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
-                0x000176c4                armBitRevIndexTable256
+                0x000176e8      0x370 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
+                0x000176e8                armBitRevIndexTable256
  .rodata.armBitRevIndexTable512
-                0x00017a34      0x380 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
-                0x00017a34                armBitRevIndexTable512
+                0x00017a58      0x380 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
+                0x00017a58                armBitRevIndexTable512
  .rodata.armBitRevIndexTable1024
-                0x00017db4      0xe10 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
-                0x00017db4                armBitRevIndexTable1024
+                0x00017dd8      0xe10 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
+                0x00017dd8                armBitRevIndexTable1024
  .rodata.armBitRevIndexTable2048
-                0x00018bc4     0x1dc0 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
-                0x00018bc4                armBitRevIndexTable2048
+                0x00018be8     0x1dc0 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
+                0x00018be8                armBitRevIndexTable2048
  .rodata.twiddleCoef_rfft_32
-                0x0001a984       0x80 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
-                0x0001a984                twiddleCoef_rfft_32
+                0x0001a9a8       0x80 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
+                0x0001a9a8                twiddleCoef_rfft_32
  .rodata.twiddleCoef_rfft_64
-                0x0001aa04      0x100 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
-                0x0001aa04                twiddleCoef_rfft_64
+                0x0001aa28      0x100 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
+                0x0001aa28                twiddleCoef_rfft_64
  .rodata.twiddleCoef_rfft_128
-                0x0001ab04      0x200 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
-                0x0001ab04                twiddleCoef_rfft_128
+                0x0001ab28      0x200 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
+                0x0001ab28                twiddleCoef_rfft_128
  .rodata.twiddleCoef_rfft_256
-                0x0001ad04      0x400 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
-                0x0001ad04                twiddleCoef_rfft_256
+                0x0001ad28      0x400 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
+                0x0001ad28                twiddleCoef_rfft_256
  .rodata.twiddleCoef_rfft_512
-                0x0001b104      0x800 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
-                0x0001b104                twiddleCoef_rfft_512
+                0x0001b128      0x800 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
+                0x0001b128                twiddleCoef_rfft_512
  .rodata.twiddleCoef_rfft_1024
-                0x0001b904     0x1000 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
-                0x0001b904                twiddleCoef_rfft_1024
+                0x0001b928     0x1000 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
+                0x0001b928                twiddleCoef_rfft_1024
  .rodata.twiddleCoef_rfft_2048
-                0x0001c904     0x2000 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
-                0x0001c904                twiddleCoef_rfft_2048
+                0x0001c928     0x2000 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
+                0x0001c928                twiddleCoef_rfft_2048
  .rodata.twiddleCoef_rfft_4096
-                0x0001e904     0x4000 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
-                0x0001e904                twiddleCoef_rfft_4096
+                0x0001e928     0x4000 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
+                0x0001e928                twiddleCoef_rfft_4096
  .rodata.arm_cfft_sR_f32_len16
-                0x00022904       0x10 lib_dsp/libCMSISDSP.a(arm_const_structs.c.obj)
-                0x00022904                arm_cfft_sR_f32_len16
+                0x00022928       0x10 lib_dsp/libCMSISDSP.a(arm_const_structs.c.obj)
+                0x00022928                arm_cfft_sR_f32_len16
  .rodata.arm_cfft_sR_f32_len32
-                0x00022914       0x10 lib_dsp/libCMSISDSP.a(arm_const_structs.c.obj)
-                0x00022914                arm_cfft_sR_f32_len32
+                0x00022938       0x10 lib_dsp/libCMSISDSP.a(arm_const_structs.c.obj)
+                0x00022938                arm_cfft_sR_f32_len32
  .rodata.arm_cfft_sR_f32_len64
-                0x00022924       0x10 lib_dsp/libCMSISDSP.a(arm_const_structs.c.obj)
-                0x00022924                arm_cfft_sR_f32_len64
+                0x00022948       0x10 lib_dsp/libCMSISDSP.a(arm_const_structs.c.obj)
+                0x00022948                arm_cfft_sR_f32_len64
  .rodata.arm_cfft_sR_f32_len128
-                0x00022934       0x10 lib_dsp/libCMSISDSP.a(arm_const_structs.c.obj)
-                0x00022934                arm_cfft_sR_f32_len128
+                0x00022958       0x10 lib_dsp/libCMSISDSP.a(arm_const_structs.c.obj)
+                0x00022958                arm_cfft_sR_f32_len128
  .rodata.arm_cfft_sR_f32_len256
-                0x00022944       0x10 lib_dsp/libCMSISDSP.a(arm_const_structs.c.obj)
-                0x00022944                arm_cfft_sR_f32_len256
+                0x00022968       0x10 lib_dsp/libCMSISDSP.a(arm_const_structs.c.obj)
+                0x00022968                arm_cfft_sR_f32_len256
  .rodata.arm_cfft_sR_f32_len512
-                0x00022954       0x10 lib_dsp/libCMSISDSP.a(arm_const_structs.c.obj)
-                0x00022954                arm_cfft_sR_f32_len512
+                0x00022978       0x10 lib_dsp/libCMSISDSP.a(arm_const_structs.c.obj)
+                0x00022978                arm_cfft_sR_f32_len512
  .rodata.arm_cfft_sR_f32_len1024
-                0x00022964       0x10 lib_dsp/libCMSISDSP.a(arm_const_structs.c.obj)
-                0x00022964                arm_cfft_sR_f32_len1024
+                0x00022988       0x10 lib_dsp/libCMSISDSP.a(arm_const_structs.c.obj)
+                0x00022988                arm_cfft_sR_f32_len1024
  .rodata.arm_cfft_sR_f32_len2048
-                0x00022974       0x10 lib_dsp/libCMSISDSP.a(arm_const_structs.c.obj)
-                0x00022974                arm_cfft_sR_f32_len2048
+                0x00022998       0x10 lib_dsp/libCMSISDSP.a(arm_const_structs.c.obj)
+                0x00022998                arm_cfft_sR_f32_len2048
  .rodata._svfprintf_r.str1.4
-                0x00022984      0x1a7 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-svfprintf.o)
+                0x000229a8      0x1a7 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-svfprintf.o)
                                  0x42 (size before relaxing)
- *fill*         0x00022b2b        0x1 
+ *fill*         0x00022b4f        0x1 
  .rodata.zeroes.0
-                0x00022b2c       0x10 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-svfprintf.o)
+                0x00022b50       0x10 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-svfprintf.o)
  .rodata.blanks.1
-                0x00022b3c       0x10 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-svfprintf.o)
+                0x00022b60       0x10 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-svfprintf.o)
  .rodata.str1.4
-                0x00022b4c       0x4c C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-locale.o)
+                0x00022b70       0x4c C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-locale.o)
  .rodata._dtoa_r.str1.4
-                0x00022b4c       0x81 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-dtoa.o)
+                0x00022b70       0x81 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-dtoa.o)
  .rodata.__multadd.str1.4
-                0x00022b4c       0x6e C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-mprec.o)
- .rodata.p05.0  0x00022b4c        0xc C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-mprec.o)
+                0x00022b70       0x6e C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-mprec.o)
+ .rodata.p05.0  0x00022b70        0xc C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-mprec.o)
+ *fill*         0x00022b7c        0x4 
  .rodata.__mprec_bigtens
-                0x00022b58       0x28 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-mprec.o)
-                0x00022b58                __mprec_bigtens
+                0x00022b80       0x28 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-mprec.o)
+                0x00022b80                __mprec_bigtens
  .rodata.__mprec_tens
-                0x00022b80       0xc8 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-mprec.o)
-                0x00022b80                __mprec_tens
+                0x00022ba8       0xc8 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-mprec.o)
+                0x00022ba8                __mprec_tens
  .rodata._ctype_
-                0x00022c48      0x101 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-ctype_.o)
-                0x00022c48                _ctype_
+                0x00022c70      0x101 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-ctype_.o)
+                0x00022c70                _ctype_
  .rodata.__assert_func.str1.4
-                0x00022d49       0x43 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-assert.o)
+                0x00022d71       0x43 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-assert.o)
  .rodata._vfiprintf_r.str1.4
-                0x00022d49       0x2f C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-vfiprintf.o)
- *fill*         0x00022d49        0x3 
+                0x00022d71       0x2f C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-vfiprintf.o)
+ *fill*         0x00022d71        0x3 
  .rodata.zeroes.0
-                0x00022d4c       0x10 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-vfiprintf.o)
+                0x00022d74       0x10 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-vfiprintf.o)
  .rodata.blanks.1
-                0x00022d5c       0x10 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-vfiprintf.o)
+                0x00022d84       0x10 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-vfiprintf.o)
  .rodata.logf.str1.4
-                0x00022d6c        0x1 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libm.a(libm_a-wf_log.o)
+                0x00022d94        0x1 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libm.a(libm_a-wf_log.o)
  .rodata.log10f.str1.4
-                0x00022d6c        0x1 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libm.a(libm_a-wf_log10.o)
+                0x00022d94        0x1 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libm.a(libm_a-wf_log10.o)
  .rodata.npio2_hw
-                0x00022d6c       0x80 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libm.a(libm_a-ef_rem_pio2.o)
+                0x00022d94       0x80 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libm.a(libm_a-ef_rem_pio2.o)
  .rodata.two_over_pi
-                0x00022dec      0x318 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libm.a(libm_a-ef_rem_pio2.o)
- .rodata.PIo2   0x00023104       0x2c C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libm.a(libm_a-kf_rem_pio2.o)
+                0x00022e14      0x318 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libm.a(libm_a-ef_rem_pio2.o)
+ .rodata.PIo2   0x0002312c       0x2c C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libm.a(libm_a-kf_rem_pio2.o)
  .rodata.init_jk
-                0x00023130        0xc C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libm.a(libm_a-kf_rem_pio2.o)
+                0x00023158        0xc C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libm.a(libm_a-kf_rem_pio2.o)
  *(.eh_frame*)
- .eh_frame      0x0002313c        0x0 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\crtbegin.o
- .eh_frame      0x0002313c        0x4 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\crtend.o
- .eh_frame      0x00023140       0x2c C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-memcpy.o)
- .eh_frame      0x0002316c       0x50 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-memchr.o)
- .eh_frame      0x000231bc       0x34 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-strlen.o)
+ .eh_frame      0x00023164        0x0 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\crtbegin.o
+ .eh_frame      0x00023164        0x4 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\crtend.o
+ .eh_frame      0x00023168       0x2c C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-memcpy.o)
+ .eh_frame      0x00023194       0x50 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-memchr.o)
+ .eh_frame      0x000231e4       0x34 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-strlen.o)
 
-.glue_7         0x000231f0        0x0
- .glue_7        0x000231f0        0x0 linker stubs
+.glue_7         0x00023218        0x0
+ .glue_7        0x00023218        0x0 linker stubs
 
-.glue_7t        0x000231f0        0x0
- .glue_7t       0x000231f0        0x0 linker stubs
+.glue_7t        0x00023218        0x0
+ .glue_7t       0x00023218        0x0 linker stubs
 
-.vfp11_veneer   0x000231f0        0x0
- .vfp11_veneer  0x000231f0        0x0 linker stubs
+.vfp11_veneer   0x00023218        0x0
+ .vfp11_veneer  0x00023218        0x0 linker stubs
 
-.v4_bx          0x000231f0        0x0
- .v4_bx         0x000231f0        0x0 linker stubs
+.v4_bx          0x00023218        0x0
+ .v4_bx         0x00023218        0x0 linker stubs
 
-.iplt           0x000231f0        0x0
- .iplt          0x000231f0        0x0 CMakeFiles/hello_world.axf.dir/device/startup_S6E2CCAJOA.c.obj
+.iplt           0x00023218        0x0
+ .iplt          0x00023218        0x0 CMakeFiles/hello_world.axf.dir/device/startup_S6E2CCAJOA.c.obj
 
 .ARM.extab
  *(.ARM.extab* .gnu.linkonce.armextab.*)
-                0x000231f0                        __exidx_start = .
+                0x00023218                        __exidx_start = .
 
-.ARM.exidx      0x000231f0        0x8
+.ARM.exidx      0x00023218        0x8
  *(.ARM.exidx* .gnu.linkonce.armexidx.*)
- .ARM.exidx     0x000231f0        0x8 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\crt0.o
+ .ARM.exidx     0x00023218        0x8 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\crt0.o
                                  0x10 (size before relaxing)
- .ARM.exidx     0x000231f8        0x0 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-memcpy.o)
+ .ARM.exidx     0x00023220        0x0 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-memcpy.o)
                                   0x8 (size before relaxing)
- .ARM.exidx     0x000231f8        0x0 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-memchr.o)
+ .ARM.exidx     0x00023220        0x0 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-memchr.o)
                                   0x8 (size before relaxing)
- .ARM.exidx     0x000231f8        0x0 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-strlen.o)
+ .ARM.exidx     0x00023220        0x0 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\libc.a(libc_a-strlen.o)
                                   0x8 (size before relaxing)
-                0x000231f8                        __exidx_end = .
+                0x00023220                        __exidx_end = .
 
-.copy.table     0x000231f8        0xc
-                0x000231f8                        . = ALIGN (0x4)
-                0x000231f8                        __copy_table_start__ = .
-                0x000231f8        0x4 LONG 0x23204 LOADADDR (.data)
-                0x000231fc        0x4 LONG 0x1ffd0000 ADDR (.data)
-                0x00023200        0x4 LONG 0x2e5 (SIZEOF (.data) / 0x4)
-                0x00023204                        __copy_table_end__ = .
+.copy.table     0x00023220        0xc
+                0x00023220                        . = ALIGN (0x4)
+                0x00023220                        __copy_table_start__ = .
+                0x00023220        0x4 LONG 0x2322c LOADADDR (.data)
+                0x00023224        0x4 LONG 0x1ffd0000 ADDR (.data)
+                0x00023228        0x4 LONG 0x2e5 (SIZEOF (.data) / 0x4)
+                0x0002322c                        __copy_table_end__ = .
 
-.rel.dyn        0x00023204        0x0
- .rel.iplt      0x00023204        0x0 CMakeFiles/hello_world.axf.dir/device/startup_S6E2CCAJOA.c.obj
+.rel.dyn        0x0002322c        0x0
+ .rel.iplt      0x0002322c        0x0 CMakeFiles/hello_world.axf.dir/device/startup_S6E2CCAJOA.c.obj
 
-.zero.table     0x00023204        0x0
-                0x00023204                        . = ALIGN (0x4)
-                0x00023204                        __zero_table_start__ = .
-                0x00023204                        __zero_table_end__ = .
+.zero.table     0x0002322c        0x0
+                0x0002322c                        . = ALIGN (0x4)
+                0x0002322c                        __zero_table_start__ = .
+                0x0002322c                        __zero_table_end__ = .
                 [!provide]                        PROVIDE (__etext = LOADADDR (.data))
 
-.data           0x1ffd0000      0xb94 load address 0x00023204
+.data           0x1ffd0000      0xb94 load address 0x0002322c
                 0x1ffd0000                        __data_start__ = .
  *(vtable)
  *(.data)
@@ -4219,11 +4219,11 @@ END GROUP
                 0x1ffd0b94                        . = ALIGN (0x4)
                 0x1ffd0b94                        __data_end__ = .
 
-.igot.plt       0x1ffd0b94        0x0 load address 0x00023d98
+.igot.plt       0x1ffd0b94        0x0 load address 0x00023dc0
  .igot.plt      0x1ffd0b94        0x0 CMakeFiles/hello_world.axf.dir/device/startup_S6E2CCAJOA.c.obj
 
 .tm_clone_table
-                0x1ffd0b94        0x0 load address 0x00023d98
+                0x1ffd0b94        0x0 load address 0x00023dc0
  .tm_clone_table
                 0x1ffd0b94        0x0 C:/EIGENE~1/DSP_LA~1/DEPEND~1/GCC-13~1.REL/bin/../lib/gcc/arm-none-eabi/13.3.1/thumb/v7e-m+fp/hard\crtbegin.o
  .tm_clone_table
@@ -4405,7 +4405,7 @@ END GROUP
 OUTPUT(hello_world.axf elf32-littlearm)
 LOAD linker stubs
 
-.debug_info     0x00000000    0x48bdc
+.debug_info     0x00000000    0x48bb9
  .debug_info    0x00000000      0x2d9 CMakeFiles/hello_world.axf.dir/device/startup_S6E2CCAJOA.c.obj
  .debug_info    0x000002d9      0x106 CMakeFiles/hello_world.axf.dir/PDL/pdl.c.obj
  .debug_info    0x000003df     0x79a1 CMakeFiles/hello_world.axf.dir/PDL/system_s6e2cc.c.obj
@@ -4419,17 +4419,17 @@ LOAD linker stubs
  .debug_info    0x00025eb8    0x16baf CMakeFiles/hello_world.axf.dir/utils/platform.cpp.obj
  .debug_info    0x0003ca67     0x1a2a CMakeFiles/hello_world.axf.dir/utils/utils.cpp.obj
  .debug_info    0x0003e491     0x2385 CMakeFiles/hello_world.axf.dir/utils/debug_utils.cpp.obj
- .debug_info    0x00040816     0x2590 CMakeFiles/hello_world.axf.dir/hello_world.cpp.obj
- .debug_info    0x00042da6     0x1e24 CMakeFiles/hello_world.axf.dir/hello_world_circ_buffer.cpp.obj
- .debug_info    0x00044bca      0x46d lib_dsp/libCMSISDSP.a(arm_rfft_fast_f32.c.obj)
- .debug_info    0x00045037      0x522 lib_dsp/libCMSISDSP.a(arm_rfft_fast_init_f32.c.obj)
- .debug_info    0x00045559     0x1338 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
- .debug_info    0x00046891      0x130 lib_dsp/libCMSISDSP.a(arm_hamming_f32.c.obj)
- .debug_info    0x000469c1      0x57b lib_dsp/libCMSISDSP.a(arm_cfft_f32.c.obj)
- .debug_info    0x00046f3c      0x3c4 lib_dsp/libCMSISDSP.a(arm_cfft_init_f32.c.obj)
- .debug_info    0x00047300     0x1257 lib_dsp/libCMSISDSP.a(arm_const_structs.c.obj)
- .debug_info    0x00048557      0x242 lib_dsp/libCMSISDSP.a(arm_bitreversal2.c.obj)
- .debug_info    0x00048799      0x443 lib_dsp/libCMSISDSP.a(arm_cfft_radix8_f32.c.obj)
+ .debug_info    0x00040816     0x256d CMakeFiles/hello_world.axf.dir/hello_world.cpp.obj
+ .debug_info    0x00042d83     0x1e24 CMakeFiles/hello_world.axf.dir/hello_world_circ_buffer.cpp.obj
+ .debug_info    0x00044ba7      0x46d lib_dsp/libCMSISDSP.a(arm_rfft_fast_f32.c.obj)
+ .debug_info    0x00045014      0x522 lib_dsp/libCMSISDSP.a(arm_rfft_fast_init_f32.c.obj)
+ .debug_info    0x00045536     0x1338 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
+ .debug_info    0x0004686e      0x130 lib_dsp/libCMSISDSP.a(arm_hamming_f32.c.obj)
+ .debug_info    0x0004699e      0x57b lib_dsp/libCMSISDSP.a(arm_cfft_f32.c.obj)
+ .debug_info    0x00046f19      0x3c4 lib_dsp/libCMSISDSP.a(arm_cfft_init_f32.c.obj)
+ .debug_info    0x000472dd     0x1257 lib_dsp/libCMSISDSP.a(arm_const_structs.c.obj)
+ .debug_info    0x00048534      0x242 lib_dsp/libCMSISDSP.a(arm_bitreversal2.c.obj)
+ .debug_info    0x00048776      0x443 lib_dsp/libCMSISDSP.a(arm_cfft_radix8_f32.c.obj)
 
 .debug_abbrev   0x00000000     0x2feb
  .debug_abbrev  0x00000000      0x20d CMakeFiles/hello_world.axf.dir/device/startup_S6E2CCAJOA.c.obj
@@ -4697,7 +4697,7 @@ LOAD linker stubs
  .debug_macro   0x000464a7      0x21d lib_dsp/libCMSISDSP.a(arm_bitreversal2.c.obj)
  .debug_macro   0x000466c4      0x20a lib_dsp/libCMSISDSP.a(arm_cfft_radix8_f32.c.obj)
 
-.debug_line     0x00000000     0xcebd
+.debug_line     0x00000000     0xcec2
  .debug_line    0x00000000      0x42d CMakeFiles/hello_world.axf.dir/device/startup_S6E2CCAJOA.c.obj
  .debug_line    0x0000042d      0x389 CMakeFiles/hello_world.axf.dir/PDL/pdl.c.obj
  .debug_line    0x000007b6      0x4f9 CMakeFiles/hello_world.axf.dir/PDL/system_s6e2cc.c.obj
@@ -4711,17 +4711,17 @@ LOAD linker stubs
  .debug_line    0x00004c88      0xcce CMakeFiles/hello_world.axf.dir/utils/platform.cpp.obj
  .debug_line    0x00005956      0xb53 CMakeFiles/hello_world.axf.dir/utils/utils.cpp.obj
  .debug_line    0x000064a9      0xa99 CMakeFiles/hello_world.axf.dir/utils/debug_utils.cpp.obj
- .debug_line    0x00006f42     0x13cb CMakeFiles/hello_world.axf.dir/hello_world.cpp.obj
- .debug_line    0x0000830d      0xc84 CMakeFiles/hello_world.axf.dir/hello_world_circ_buffer.cpp.obj
- .debug_line    0x00008f91      0x693 lib_dsp/libCMSISDSP.a(arm_rfft_fast_f32.c.obj)
- .debug_line    0x00009624      0x71f lib_dsp/libCMSISDSP.a(arm_rfft_fast_init_f32.c.obj)
- .debug_line    0x00009d43      0x4f0 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
- .debug_line    0x0000a233      0x539 lib_dsp/libCMSISDSP.a(arm_hamming_f32.c.obj)
- .debug_line    0x0000a76c      0xcb2 lib_dsp/libCMSISDSP.a(arm_cfft_f32.c.obj)
- .debug_line    0x0000b41e      0x649 lib_dsp/libCMSISDSP.a(arm_cfft_init_f32.c.obj)
- .debug_line    0x0000ba67      0x53c lib_dsp/libCMSISDSP.a(arm_const_structs.c.obj)
- .debug_line    0x0000bfa3      0x670 lib_dsp/libCMSISDSP.a(arm_bitreversal2.c.obj)
- .debug_line    0x0000c613      0x8aa lib_dsp/libCMSISDSP.a(arm_cfft_radix8_f32.c.obj)
+ .debug_line    0x00006f42     0x13d0 CMakeFiles/hello_world.axf.dir/hello_world.cpp.obj
+ .debug_line    0x00008312      0xc84 CMakeFiles/hello_world.axf.dir/hello_world_circ_buffer.cpp.obj
+ .debug_line    0x00008f96      0x693 lib_dsp/libCMSISDSP.a(arm_rfft_fast_f32.c.obj)
+ .debug_line    0x00009629      0x71f lib_dsp/libCMSISDSP.a(arm_rfft_fast_init_f32.c.obj)
+ .debug_line    0x00009d48      0x4f0 lib_dsp/libCMSISDSP.a(arm_common_tables.c.obj)
+ .debug_line    0x0000a238      0x539 lib_dsp/libCMSISDSP.a(arm_hamming_f32.c.obj)
+ .debug_line    0x0000a771      0xcb2 lib_dsp/libCMSISDSP.a(arm_cfft_f32.c.obj)
+ .debug_line    0x0000b423      0x649 lib_dsp/libCMSISDSP.a(arm_cfft_init_f32.c.obj)
+ .debug_line    0x0000ba6c      0x53c lib_dsp/libCMSISDSP.a(arm_const_structs.c.obj)
+ .debug_line    0x0000bfa8      0x670 lib_dsp/libCMSISDSP.a(arm_bitreversal2.c.obj)
+ .debug_line    0x0000c618      0x8aa lib_dsp/libCMSISDSP.a(arm_cfft_radix8_f32.c.obj)
 
 .debug_str      0x00000000   0x1d96fa
  .debug_str     0x00000000   0x1d96fa CMakeFiles/hello_world.axf.dir/device/startup_S6E2CCAJOA.c.obj

@@ -1,3 +1,9 @@
+// Gruppe 3: Hadeed, Patrick, Philipp, Theo, Zihang
+// Version: 75 
+// Abgabeversion 
+//
+// Anzahl an Originalsignalen muss angegeben werden. Zeile 25
+
 #include "global.h"
 #include "arm_math.h"
 #include <math.h>
@@ -166,9 +172,8 @@ void calculate_magnitude(float32_t* fft_data, float32_t* mag, uint32_t fft_size)
 // Funktion zur Berechnung der Audio Features
 void extract_features(float32_t* mag, float32_t* mag_past, AudioFeatures* features)
 {
-    const float32_t EPS = 1e-12f;
-    const uint32_t K = BLOCK_SIZE / 2;
-
+    const float32_t EPS = 1e-6f;
+  
     float32_t magnitude_sum = 0.0f;
     float32_t weighted_sum = 0.0f;
     float32_t power_sum = 0.0f;
@@ -182,7 +187,7 @@ void extract_features(float32_t* mag, float32_t* mag_past, AudioFeatures* featur
 
     magnitude_sum_past = magnitude_sum;
 
-    for(uint32_t i = 1; i < K; i++)
+    for(uint32_t i = 1; i < BLOCK_SIZE / 2; i++)
     {
         if (mag[i] > 0.01f) {magnitude_sum += mag[i];}
         if(mag[i] > 0.01f) {weighted_sum += (i * df) * mag[i];}
@@ -211,18 +216,16 @@ void extract_features(float32_t* mag, float32_t* mag_past, AudioFeatures* featur
 
     features->spectral_rolloff = fs * 0.5f;
     float32_t acc = 0.0f;
-    float32_t thr = 0.85f * magnitude_sum;
-
-    for(uint32_t i = 1; i < K; i++)
+    for(uint32_t i = 1; i < BLOCK_SIZE / 2; i++)
     {
         acc += mag[i];
-        if(acc >= thr) {
+        if(acc >=  0.85f * magnitude_sum) {
             features->spectral_rolloff = (float32_t)i * df;
             break;
         }
     }
 
-    features->spectral_centroid = (magnitude_sum > 1e-6f) ? (weighted_sum / magnitude_sum) : 0.0f;
+    features->spectral_centroid = (magnitude_sum > EPS) ? (weighted_sum / magnitude_sum) : 0.0f;
     features->flux = sqrtf(flux_sum) / (magnitude_sum + EPS);
 
     features->spectral_bandwidth = f_max-f_min;
@@ -379,6 +382,7 @@ int main()
         {
             if(Signal_count == (min_Signal_count - 1))
             {
+                debug_printf("Signal Start\n");
                 signalA.energy = left_features.energy;
                 signalA.spectral_bandwidth = left_features.spectral_bandwidth;
                 signalA.spectral_rolloff = left_features.spectral_rolloff;
@@ -396,6 +400,7 @@ int main()
         {
             if(check_signal_end(left_features.energy, left_features.spectral_centroid))
             {
+                debug_printf("Signal Ende\n");
                 signal_detected = false;
                 reference_energy_set = false;
                 low_energy_counter = 0;
@@ -454,7 +459,7 @@ int main()
         // Step 11: Signal speichern wenn erkannt (MIT KOMPRESSION)
         if (score > score_threshold && Signal_count == min_Signal_count)
         {
-            IF_DEBUG(debug_printf("Signal_A\n"));
+            //IF_DEBUG(debug_printf("Signal_A\n"));
             // *** GEÄNDERT: FFT-Daten komprimieren vor dem Speichern ***
             compress_fft(left_fft, signalAusgang_compressed[write_index], BLOCK_SIZE * 2);
 
@@ -479,6 +484,7 @@ int main()
         // Step 12: Ausgabe (MIT DEKOMPRESSION)
         if(is_playing)
         {
+            //debug_printf("Signal Ausgabe\n");
             // *** GEÄNDERT: FFT-Daten dekomprimieren vor IFFT ***
             decompress_fft(signalAusgang_compressed[playback_index], decompression_buffer, BLOCK_SIZE * 2);
             
