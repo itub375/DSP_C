@@ -206,7 +206,7 @@ void extract_features(float32_t* mag, float32_t* mag_past, AudioFeatures* featur
         power_sum += mag[i] * mag[i];
 
         // flux
-        if(fabs(mag[i] - mag_past[i]) > 0.0f) {flux_sum += (mag[i] - mag_past[i]) * (mag[i] - mag_past[i]);}
+        flux_sum += (mag[i] - mag_past[i]) * (mag[i] - mag_past[i]);
 
         // bandwidth (everything within 3dB of peak magnitude)
         if(mag[i] > (peak_mag * 0.707f) && !f_min_found) {
@@ -260,10 +260,7 @@ bool cfar_detector(float32_t current_energy)
     if(energy_history_count < CFAR_WINDOW_SIZE)
     {
         energy_history_count++;
-    }
     
-    if(energy_history_count < CFAR_WINDOW_SIZE)
-    {
         return false;
     }
     
