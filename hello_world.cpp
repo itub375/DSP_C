@@ -207,7 +207,12 @@ void extract_features(float32_t* mag, float32_t* mag_past, AudioFeatures* featur
 
         // flux
         flux_sum += (mag[i] - mag_past[i]) * (mag[i] - mag_past[i]);
+      
+    }
 
+    // feature calculation
+    for(uint32_t i = 1; i < BLOCK_SIZE / 2; i++)
+    {
         // bandwidth (everything within 3dB of peak magnitude)
         if(mag[i] > (peak_mag * 0.707f) && !f_min_found) {
             f_min = i * df;
@@ -216,8 +221,8 @@ void extract_features(float32_t* mag, float32_t* mag_past, AudioFeatures* featur
         if(mag[i] > (peak_mag * 0.707f)){
             f_max = i * df;
         }
-        
     }
+
 
     features->spectral_rolloff = fs * 0.5f;
     float32_t acc = 0.0f;
@@ -230,6 +235,9 @@ void extract_features(float32_t* mag, float32_t* mag_past, AudioFeatures* featur
         }
     }
 
+
+
+    
     // spectral centroid
     features->spectral_centroid = (magnitude_sum > EPS) ? (weighted_sum / magnitude_sum) : 0.0f;
     // flux
